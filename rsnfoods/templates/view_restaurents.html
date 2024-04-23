@@ -1,0 +1,21 @@
+{% extends './base.html' %}
+{% load static %}
+{% block content %}
+  <div class="container p-4">
+    <h2>All Restaurants ({{ restaurants|length }})</h2>
+    {% for item in restaurants %}
+      <div class="card my-2">
+        <div style="display: flex; gap:10px;padding:2%;justify-content: space-between;width:100%;align-items: center;">
+          <div class="d-flex p-2" style="">
+            <img height="100px" width="auto" src="{% get_media_prefix %}{{ item.image }}" alt="" />
+            <div class="p-4">
+              <h5 class="card-title">{{ item.name }}</h5>
+              <p class="card-text">{{ item.address }}</p>
+            </div>
+          </div>
+          <a href="{% url 'view_restaurent' item.id %}" class="btn btn-lg btn-primary" style="display:flex;align-items: center;justify-content: center;">Visit</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav %}
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'view_restaurents' %}">Restaurants</a>
+  </li>
+{% endblock %}
+
+{% block content %}
+  <div class="container-xxl py-5 bg-dark hero-header mb-5" style="background: 
+  linear-gradient(rgba(15, 23, 43, 0.9), rgba(15, 23, 43, 0.9)), url({% static '/bg-hero.jpg' %});
+  
+  ;">
+    <div class="container my-5 py-5">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6 text-center text-lg-start">
+          <h1 class="display-3 text-white animated slideInLeft">Enjoy Our<br />Delicious Meal</h1>
+          <p class="text-white animated slideInLeft mb-4 pb-2">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet</p>
+          <a href="" class="btn btn-primary py-sm-3 px-sm-5 me-3 animated slideInLeft">Book A Table</a>
+        </div>
+        <div class="col-lg-6 text-center text-lg-end overflow-hidden">
+          <img class="img-fluid" src="/static/hero.png" alt="" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-xxl py-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
+          <div class="service-item rounded pt-3">
+            <div class="p-4">
+              <i class="fa fa-3x fa-user-tie text-primary mb-4"></i>
+              <h5>Master Chefs</h5>
+              <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s" style="visibility: visible; animation-delay: 0.3s; animation-name: fadeInUp;">
+          <div class="service-item rounded pt-3">
+            <div class="p-4">
+              <i class="fa fa-3x fa-utensils text-primary mb-4"></i>
+              <h5>Quality Food</h5>
+              <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s" style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInUp;">
+          <div class="service-item rounded pt-3">
+            <div class="p-4">
+              <i class="fa fa-3x fa-cart-plus text-primary mb-4"></i>
+              <h5>Online Order</h5>
+              <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s" style="visibility: visible; animation-delay: 0.7s; animation-name: fadeInUp;">
+          <div class="service-item rounded pt-3">
+            <div class="p-4">
+              <i class="fa fa-3x fa-headset text-primary mb-4"></i>
+              <h5>24/7 Service</h5>
+              <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-xxl py-5">
+    <div class="container">
+      <div class="text-center wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
+        <h5 class="section-title ff-secondary text-center text-primary fw-normal">Food Menu</h5>
+        <h1 class="mb-5">Most Popular Items</h1>
+      </div>
+      <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
+        <div class="tab-content">
+          <div id="" class="tab-pane fade show p-0 active">
+            {% for food in foods %}
+              <div class="d-flex align-items-center">
+                <img class="flex-shrink-0 img-fluid rounded" src="{% get_media_prefix %}{{ food.image }} " alt="" style="width: 80px;" />
+
+                <!-- single -->
+                <div class="w-100 d-flex flex-column text-start ps-4">
+                  <h5 class="d-flex justify-content-between border-bottom pb-2">
+                    <span>{{ food.name }}</span>
+                    <span class="text-primary">${{ food.price }}</span>
+                  </h5>
+                  <p class="text-muted mb-0">{{ food.description }}</p>
+                </div>
+                <!-- single end -->
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-xxl py-5">
+    <div class="container">
+      <div class="text-center wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
+        <h5 class="section-title ff-secondary text-center text-primary fw-normal">Top Restaurants</h5>
+        <h1 class="mb-5">Most Popular Restaurants</h1>
+      </div>
+      <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
+        <div class="t nt">
+          <div id="" class="row" style="gap:10px">
+            {% for food in restaurants %}
+              <!-- card with image -->
+
+              <div class="col card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                  <div class="col-md-4">
+                    <img src="{% get_media_prefix %}{{ food.image }}" class="img-fluid rounded-start" alt="..." />
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title text-primary">{{ food.name }}</h5>
+                      <p class="card-text">{{ food.description }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- footer -->
+  <footer class="bg-dark py-5">
+    <div class="container text-center text-primary">© Your RSNFood, All Right Reserved.</div>
+  </footer>
+  <style>
+    .hero-header {
+      /*background: linear-gradient(rgba(15, 23, 43, 0.9), rgba(15, 23, 43, 0.9)), url();*/
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .hero-header img {
+      animation: imgRotate 50s linear infinite;
+    }
+    
+    @keyframes imgRotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    .service-item {
+      box-shadow: 0 0 45px rgba(0, 0, 0, 0.08);
+      transition: 0.5s;
+    }
+    /*** Service ***/
+    .service-item {
+      box-shadow: 0 0 45px rgba(0, 0, 0, 0.08);
+      transition: 0.5s;
+    }
+    
+    .service-item:hover {
+      background: var(--primary);
+    }
+    
+    .service-item * {
+      transition: 0.5s;
+    }
+    
+    .service-item:hover * {
+      color: var(--light) !important;
+    }
+    
+    /*** Food Menu ***/
+    .nav-pills .nav-item .active {
+      border-bottom: 2px solid var(--primary);
+    }
+    .section-title {
+      position: relative;
+      display: inline-block;
+    }
+    .ff-secondary {
+      font-family: 'Pacifico', cursive;
+    }
+  </style>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+{% endblock %}

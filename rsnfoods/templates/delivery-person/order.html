@@ -1,0 +1,68 @@
+{% extends './delivery-base.html' %}
+{% load static %}
+{% block title %}
+  Home
+{% endblock %}
+
+{% block page_content %}
+  {% comment %} {{ order }} {% endcomment %}
+  <div class="container p-4">
+    <!-- card -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Order: {{ order.id }}</h3>
+        <h2>{{ order.status }}</h2>
+        <p>
+          <strong>Customer:</strong> {{ order.user }} (id:{{ order.user.id }})<br />
+          <strong>Address:</strong> {{ order.delivery_address }}<br />
+          <strong>Customer Name:</strong>{{ order.user.first_name }} {{ order.user.last_name }} (id: {{ order.user.id }})<br />
+          <strong>Customer Phone:</strong> {{ userEx.phone }}<br />
+          <strong>Order Date:</strong> {{ order.created_at }}<br />
+          <strong>Order Date:</strong> {{ order.created_at }}<br />
+          <strong>Total:</strong> {{ order.total }}<br />
+          <strong>Payment Status:&nbsp;</strong>{{ order.payment_status }}
+        </p>
+      </div>
+    </div>
+
+    <div class="actions" style="width: 100%;">
+      <form action="{% url 'dp_order' order.id %}" style="width: 100%;gap:3px; display: flex;  " method="post" class="d-flex" name="xform">
+        <input type="hidden" name="status" value="" />
+        <input type="hidden" name="payment_status" value="UNPAID" />
+        {% csrf_token %}
+        {% if order.status == 'Delivering' %}
+          <button type="button" href="{% url 'dp_order' order.id %}" class="btn btn-primary" onclick="document.xform.status.value='Delivered';document.xform.payment_status.value='PAID';document.xform.submit();">Complete Delivery (with payment PAID)</button>
+          <button type="button" class="btn btn-danger" onclick="document.xform.status.value='Returned';document.xform.payment_status.value='UNPAID';document.xform.submit();">Return Delivery (with payment UNPAID)</button>
+        {% elif order.status == 'Confirmed' %}
+          <button class="btn btn-warning" type="button" onclick="document.xform.status.value='Delivering';document.xform.submit();">Start Delivery</button>
+        {% endif %}
+      </form>
+    </div>
+
+    {% comment %} {{ items }} {% endcomment %}
+    <div class="items my-2">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Food</th>
+            <th>Quantity</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+            <tr>
+              <td>
+                <img src="{% get_media_prefix %}{{ item.food.image }}" alt="{{ item.food.name }}" class="img-thumbnail" style="width: 50px; height: 50px;" />
+              </td>
+              <td>{{ item.food.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.food.price }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends './owner-base.html' %}
+{% load static %}
+{% block res_content %}
+  <div class="p-4">
+    <div class="" id="addFood" tabindex="-1" role="dialog" aria-labelledby="addFood" aria-hidden="true">
+      <div class="modal-content">
+        <form action="" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="addFood">Edit Food</h5>
+          </div>
+
+          <div class="modal-body">
+            <div class="form-group row">
+              <label for="restaurant" class="col-sm-3 col-form-label">Select Restaurant</label>
+              <div class="col-sm-9">
+                <select required class="form-control" id="restaurant" name="restaurant">
+                  {% for restaurant in restaurants %}
+                    {% comment %} <pre>{{ food.restaurant.id }} {{ restaurant.id }}</pre> {% endcomment %}
+                    {% if restaurant.id == food.restaurant.id %}
+                      <option selected value="{{ restaurant.id }}">{{ restaurant.name }}</option>
+                    {% else %}
+                      <option value="{{ restaurant.id }}">{{ restaurant.name }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="name" class="col-sm-3 col-form-label">Food Name</label>
+              <div class="col-sm-9">
+                <input required type="text" class="form-control" id="name" name="name" value="{{ food.name }}" />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="description" class="col-sm-3 col-form-label">Food Description</label>
+              <div class="col-sm-9">
+                <input value="{{ food.description }}" required type="text" class="form-control" id="description" name="description" />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="price" class="col-sm-3 col-form-label">Food Price</label>
+              <div class="col-sm-9">
+                <input value="{{ food.price }}" required type="floatformat" class="form-control" id="price" name="price" />
+              </div>
+            </div>
+
+            <div>
+              Current Image: <img src="{% get_media_prefix %}{{ food.image }}" alt="{{ food.image }}" style="width: 100px; height: 100px;" />
+            </div>
+
+            <div class="form-group row">
+              <label for="image" class="col-sm-3 col-form-label">Food Image</label>
+              <div class="col-sm-9">
+                <input type="file" class="form-control" id="image" name="image" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="{% url 'ro_list_food' %}" type="button" class="btn btn-secondary" data-dismiss="modal">Close</a>
+            <input type="submit" class="btn btn-primary" value="Edit Food" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
