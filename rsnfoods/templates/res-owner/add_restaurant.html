@@ -1,0 +1,58 @@
+{% extends './owner-base.html' %}
+{% block res_content %}
+  <div class="p-4">
+    <!-- add restaurant -->
+    <div class="" id="addRestaurant" tabindex="-1" role="dialog" aria-labelledby="addRestaurantLabel" aria-hidden="true">
+      <div class="modal-content">
+        <form action="" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="addRestaurantLabel">Add Restaurant</h5>
+          </div>
+          <div class="modal-body">
+            <div class="form-group row">
+              <label for="name" class="col-sm-3 col-form-label">Restaurant Name</label>
+              <div class="col-sm-9">
+                <input required type="text" class="form-control" id="name" name="name" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addr_address" class="col-sm-3 col-form-label">Restaurant Address</label>
+              <div class="col-sm-9">
+                <input required type="text" class="form-control" id="addr_address" name="addr_address" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addr_city" class="col-sm-3 col-form-label">Restaurant City</label>
+              <div class="col-sm-9">
+                <input required type="text" class="form-control" id="addr_city" name="addr_city" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addr_state" class="col-sm-3 col-form-label">Restaurant State</label>
+              <div class="col-sm-9">
+                <input required type="text" class="form-control" id="addr_state" name="addr_state" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addr_zip_code" class="col-sm-3 col-form-label">Restaurant Zip Code</label>
+              <div class="col-sm-9">
+                <input required type="text" class="form-control" id="addr_zip_code" name="addr_zip_code" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="image" class="col-sm-3 col-form-label">Restaurant Image</label>
+              <div class="col-sm-9">
+                <input required type="file" class="form-control" id="image" name="image" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input type="submit" class="btn btn-primary" value="Add Restaurant" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

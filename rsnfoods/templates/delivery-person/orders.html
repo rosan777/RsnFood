@@ -1,0 +1,130 @@
+{% extends './delivery-base.html' %}
+
+{% block page_content %}
+  {{ orders }}
+  <div class="container p-4">
+    <h1 class="display-4">Orders assigned to you</h1>
+
+    <p class="lead">Currently Deliverying</p>
+    {% comment %} {{ orders }} {% endcomment %}
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Restraunt</th>
+          <th>Delivery Address</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in deliverying_orders %}
+          <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.total }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.restaurant }}</td>
+            <td style="width: 150px; word-break: break-all;">{{ item.delivery_address }}</td>
+            {% comment %} {% if item.delivery_person %}
+              <td>{{ item.delivery_person }}({{ item.delivery_person.id }})</td>
+            {% else %}
+              <td>Not Assigned</td>
+            {% endif %} {% endcomment %}
+            <td>{{ item.created_at }}</td>
+            <td>
+              <a class="btn btn-info" href="{% url 'dp_order' item.id %}">View Details</a>
+              {% comment %} <form action="{% url 'dp_order' item.id %}" style="width: 100%;gap:3px;" method="post" class="d-flex">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="Delivered" />
+
+                <button type="submit" href="{% url 'dp_order' item.id %}" class="btn btn-primary">Finish Delivery</button> {% endcomment %}
+                {% comment %}
+              </form> {% endcomment %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p class="lead">New orders</p>
+    {% comment %} {{ orders }} {% endcomment %}
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Restraunt</th>
+          <th>Delivery Address</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in assigned_orders %}
+          <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.total }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.restaurant }}</td>
+            <td style="width: 150px; word-break: break-all;">{{ item.delivery_address }}</td>
+            {% comment %} {% if item.delivery_person %}
+              <td>{{ item.delivery_person }}({{ item.delivery_person.id }})</td>
+            {% else %}
+              <td>Not Assigned</td>
+            {% endif %} {% endcomment %}
+            <td>{{ item.created_at }}</td>
+            <td>
+              <a class="btn btn-info" href="{% url 'dp_order' item.id %}">View Details</a>
+              {% comment %} <form action="{% url 'dp_order' item.id %}" style="width: 100%;" method="post">
+                {% csrf_token %} {% endcomment %}
+
+                {% comment %} <input type="hidden" name="req_url" value="{{ request.url }}" /> {% endcomment %}
+                {% comment %} <input type="hidden" name="status" value="Delivering" />
+                <button type="submit" class="btn btn-primary">Start Delivery</button>
+              </form> {% endcomment %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p class="lead">Completed Deliveries</p>
+    {% comment %} {{ orders }} {% endcomment %}
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Restraunt</th>
+          <th>Delivery Address</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in completed_orders %}
+          <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.total }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.restaurant }}</td>
+            <td style="width: 150px; word-break: break-all;">{{ item.delivery_address }}</td>
+            {% comment %} {% if item.delivery_person %}
+              <td>{{ item.delivery_person }}({{ item.delivery_person.id }})</td>
+            {% else %}
+              <td>Not Assigned</td>
+            {% endif %} {% endcomment %}
+            <td>{{ item.created_at }}</td>
+            <td>
+              <a href="{% url 'dp_order' item.id %}" class="btn btn-primary">View</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

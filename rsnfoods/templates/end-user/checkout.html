@@ -1,0 +1,52 @@
+{% extends './user-base.html' %}
+
+{% block page_content %}
+  <div class="container p-4">
+    {% comment %}Cart Items: {{ items }}
+    Total: {{ total }} {% endcomment %}
+    <!-- card -->
+    {% if not items %}
+      <div class="alert alert-warning">Cart is empty</div>
+    {% else %}
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Checkout</h3>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-sm">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in items %}
+                <tr>
+                  <td>{{ item.food.name }}</td>
+                  <td>{{ item.food.price }}</td>
+                  <td>{{ item.quantity }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="text-right">
+            <h3>Total: {{ total }}</h3>
+          </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+          <form action="" method="post" class="" style="width: 100%;">
+            {% csrf_token %}
+            <h4 class="text-center">Delivery Address</h4>
+            <textarea required style="width: 100%;" name="delivery_address"></textarea>
+            <div class="text-center">
+              <a class="btn btn-danger" href="{% url 'enduser_cart' %}">Back to cart</a>
+              <button type="submit" class="btn btn-primary">Confirm Order</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

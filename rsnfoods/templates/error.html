@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if error %}
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
+  {% else %}
+    <div class="alert alert-success" role="alert">You have successfully registered!</div>
+  {% endif %}
+{% endblock %}

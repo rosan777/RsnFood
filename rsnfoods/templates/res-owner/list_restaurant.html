@@ -1,0 +1,47 @@
+{% extends './owner-base.html' %}
+
+{% load static %}
+
+{% block res_content %}
+  <div class="container">
+    <div class="w-full p-4">
+      <a href="{% url 'ro_add_restaurant' %}" class="w-full bg-primary text-light p-3">Add Restaurant</a>
+    </div>
+    {% if not restaurants %}
+      <h3 class="w-full p-3">No Restaurants Found</h3>
+    {% else %}
+      <h3 class="w-full p-3">Restaurant List</h3>
+      <table class="w-full table">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Address</th>
+            <th scope="col">Image</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for restaurant in restaurants %}
+            {% comment %} {{ restaurant.address }} {% endcomment %}
+            <tr>
+              <th scope="row">{{ restaurant.id }}</th>
+              <td>{{ restaurant.name }}</td>
+              <td style="max-width: 100px; word-break: break-all;">{{ restaurant.address }}</td>
+              <td>
+                <img height="100px" width="auto" src="{% get_media_prefix %}{{ restaurant.image }}" />
+              </td>
+              <!-- actions -->
+              <td>
+                <a href="{% url 'ro_edit_restaurant' restaurant.id %}" class="btn btn-primary text-light p-2">Edit</a>
+                <a href="{% url 'ro_delete_restaurant' restaurant.id %}" class="btn btn-danger text-light p-2">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
+
+  <!-- list restaurants -->
+{% endblock %}

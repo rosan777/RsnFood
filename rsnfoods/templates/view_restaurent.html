@@ -1,0 +1,53 @@
+{% extends './base.html' %}
+{% load static %}
+{% block content %}
+  <div class="container p-4">
+    <div class="d-flex justify-content-between">
+      <div>
+        <h2>{{ restaurant.name }}</h2>
+        <p>{{ restaurant.address }}</p>
+      </div>
+      <div>
+        <img src="{% get_media_prefix %}{{ food.image }}" alt="" />
+      </div>
+    </div>
+  </div>
+  <div class="container p-4">
+    <h3>Menu</h3>
+    {% comment %} <ul>
+      {% for item in foods %}
+        <li class="p-2">
+          {{ item.name }} - ${{ item.price }}
+
+          {% if request.userEx.user_type == 'EndUser' %}
+            <a href="" class="btn btn-primary">Add to cart</a>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul> {% endcomment %}
+    <!-- view in grid with bootstrap -->
+    <div class="row">
+      {% for item in foods %}
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <img height="200" class="p-2" src="{% get_media_prefix %}{{ item.image }}" class="card-img-top" alt="..." />
+            <div class="card-body">
+              <h5 class="card-title">{{ item.name }}</h5>
+              <p class="card-text">{{ item.description }}</p>
+              <p class="card-text">${{ item.price }}</p>
+              {% if request.userEx.user_type == 'EndUser' %}
+                <form method="post" action="{% url 'enduser_cart' %}" class="d-flex justify-content-between">
+                  {% csrf_token %}
+                  <input type="hidden" name="request_url" value="{{ request.path }}" />
+                  <input type="hidden" name="food_id" value="{{ item.id }}" />
+                  <input style="width:80px;height:40px;" type="number" name="quantity" value="1" />
+                  <button type="submit" class="btn btn-primary">Add to cart</button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

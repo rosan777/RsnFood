@@ -1,0 +1,60 @@
+{% extends './owner-base.html' %}
+
+{% load static %}
+
+{% block res_content %}
+  {% comment %} {{ order }} {% endcomment %}
+
+  <div class="container p-2">
+    <!-- card -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Order: {{ order.id }}</h3>
+        <h2><span class="badge">{{ order.status }}</span></h2>
+
+        <p>
+          <strong>Customer:</strong> {{ order.user }} (id:{{ order.user.id }})<br />
+          <strong>Address:</strong> {{ order.delivery_address }}<br />
+          <strong>Delivery Person:</strong> {{ order.delivery_person }} (id:{{ order.delivery_person.id }})<br />
+          <strong>Order Date:</strong> {{ order.created_at }}<br />
+          <strong>Total:</strong> {{ order.total }}<br />
+          <strong>Payment Status:&nbsp;</strong>{{ order.payment_status }}
+        </p>
+      </div>
+      <form name="xform" method="post" action="" class="d-flex" style="width: 100%;">
+        {% if order.status == 'Pending' %}
+          {% csrf_token %}
+          <input type="hidden" name="status" value="Pending" />
+          <button type="button" style="width: 100%;" onclick="document.xform.status.value='Cancelled';document.xform.submit()" class="btn btn-danger">Cancel Order</button>
+          <button type="button" style="width: 100%;" onclick="document.xform.status.value='Confirmed';document.xform.submit()" class="btn btn-primary">Confirm Order</button>
+        {% endif %}
+      </form>
+    </div>
+    {% comment %} {{ items }} {% endcomment %}
+    <div class="items my-2">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Food</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+            <tr>
+              <td>
+                <img src="{% get_media_prefix %}{{ item.food.image }}" alt="{{ item.food.name }}" class="img-thumbnail" style="width: 50px; height: 50px;" />
+              </td>
+              <td>{{ item.food.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.food.price }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends './owner-base.html' %}
+
+{% load static %}
+
+{% comment %} {{ orders }} {% endcomment %}
+
+{% block res_content %}
+  <div class="container p-4">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Items</h1>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Ordered By</th>
+              <th>Total</th>
+              <th>Restraunt</th>
+              <th>Delivery Person</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+              <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.user }}</td>
+                <td>{{ order.total }}</td>
+                <td>{{ order.restaurant }}</td>
+                <td>{{ order.delivery_person }}</td>
+                <td>{{ order.status }}</td>
+                <td>
+                  <a class="btn btn-primary" href="{% url 'ro_view_order' order.id %}">View/Action</a>
+                </td>
+                <td></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

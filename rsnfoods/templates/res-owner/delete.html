@@ -1,0 +1,32 @@
+{% extends './owner-base.html' %}
+
+{% load static %}
+
+{% block res_content %}
+  <div class="container my-4">
+    <div class="card" style="">
+      <div style="width: 50%; height:50%">
+        <img style="max-width: 300px;" style="border-top-left-radius: 5px; border-top-right-radius: 5px" src="{% get_media_prefix %}{{ item.image }}" />
+      </div>
+
+      <div class="card-body">
+        {% if item.name %}
+          Name: <h5 class="card-title">{{ item.name }}</h5>
+        {% endif %}
+        {% if item.price %}
+          Price: <h5 class="card-title">{{ item.price }}</h5>
+        {% endif %}
+        {% if item.description %}
+          Description: <h5 class="card-title">{{ item.description }}</h5>
+        {% endif %}
+        <div style="display: flex; gap: 4px;" class="actions">
+          <a onclick="window.history.back()" class="btn btn-primary text-light">Goback</a>
+          <form action="" method="post" class="">
+            {% csrf_token %}
+            <button class="btn btn-danger text-light" type="submit">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

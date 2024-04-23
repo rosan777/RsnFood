@@ -1,0 +1,38 @@
+{% extends '../base.html' %}
+
+{% block content %}
+  <div class="grid-item">
+    <div class="card">
+      <div class="card-header">
+        <h3 id="title">{{ title }}</h3>
+      </div>
+    </div>
+  </div>
+
+  {% block res_content %}
+
+  {% endblock %}
+  <script>
+    let title = document.getElementById('title')
+    
+    console.log(document.URL.split('/')[4])
+    
+    let titleVal = ''
+    try {
+      titleVal = document.URL.split('/')[4]
+    } catch (e) {
+      titleVal = document.URL.split('/').pop()
+    }
+    
+    title.innerText = titleVal.toUpperCase().replace(/-/g, ' ').replace(/#/g, ' ')
+    
+    const navItems = document.getElementById('nav-items').children
+    
+    for (let i = 0; i < navItems.length; i++) {
+      let elemText = navItems[i].firstElementChild.innerText.toLowerCase().trim()
+      elemText = elemText.slice(0, -1)
+      titleVal.includes(elemText) ? navItems[i].classList.add('active') : null
+      //console.log(elemText, titleVal, titleVal.includes(elemText))
+    }
+  </script>
+{% endblock %}

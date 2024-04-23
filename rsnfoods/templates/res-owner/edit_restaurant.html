@@ -1,0 +1,66 @@
+{% extends './owner-base.html' %}
+{% load static %}
+{% block res_content %}
+  {{ item }}
+  <div class="p-4">
+    <!-- add restaurant -->
+    <div class="" id="addRestaurant" tabindex="-1" role="dialog" aria-labelledby="addRestaurantLabel" aria-hidden="true">
+      <div class="modal-content">
+        <form action="" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="addRestaurantLabel">Add Restaurant</h5>
+          </div>
+          <div class="modal-body">
+            <div class="form-group row">
+              <label for="name" class="col-sm-3 col-form-label">Restaurant Name</label>
+              <div class="col-sm-9">
+                <input required type="text" class="form-control" id="name" name="name" value="{{ item.name }}" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addr_address" class="col-sm-3 col-form-label">Restaurant Address</label>
+              <div class="col-sm-9">
+                <input required type="text" class="form-control" id="addr_address" name="addr_address" value="{{ item.address.address_text }}" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addr_city" class="col-sm-3 col-form-label">Restaurant City</label>
+              <div class="col-sm-9">
+                <input required type="text" class="form-control" id="addr_city" name="addr_city" value="{{ item.address.city }}" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addr_state" class="col-sm-3 col-form-label">Restaurant State</label>
+              <div class="col-sm-9">
+                <input required type="text" class="form-control" id="addr_state" name="addr_state" value="{{ item.address.state }}" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="addr_zip_code" class="col-sm-3 col-form-label">Restaurant Zip Code</label>
+              <div class="col-sm-9">
+                <input required type="text" class="form-control" id="addr_zip_code" name="addr_zip_code" value="{{ item.address.zip_code }}" />
+              </div>
+            </div>
+            <div class="border p-2 rows">
+              <div class="col">
+                Current Image: <img height="100px" width="auto" src="{% get_media_prefix %}/{{ item.image }}" />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="image" class="col-sm-3 col-form-label">Restaurant Image</label>
+              <div class="col-sm-9">
+                <input type="file" class="form-control" id="image" name="image" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="{% url 'ro_list_restaurant' %}" type="button" class="btn btn-secondary">Go Back</a>
+            <input type="submit" class="btn btn-primary" value="Edit Restaurant" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

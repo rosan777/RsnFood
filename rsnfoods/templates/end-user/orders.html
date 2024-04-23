@@ -1,0 +1,41 @@
+{% extends './user-base.html' %}
+
+{% block page_content %}
+  <div class="container p-4">
+    <h1 class="display-4">Orders</h1>
+    <p class="lead">List of orders</p>
+    {% comment %} {{ orders }} {% endcomment %}
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Restraunt</th>
+          <th>Delivery Person</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in orders %}
+          <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.total }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.restaurant }}</td>
+            {% if item.delivery_person %}
+              <td>{{ item.delivery_person }}({{ item.delivery_person.id }})</td>
+            {% else %}
+              <td>Not Assigned</td>
+            {% endif %}
+            <td>{{ item.created_at }}</td>
+            <td>
+              <a href="{% url 'enduser_order' item.id %}" class="btn btn-primary">View</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends './user-base.html' %}
+
+{% block page_content %}
+  <div class="container p-4">
+    <h1 class="display-4">Welcome, {{ request.user }}</h1>
+    <p class="lead">This is a private area for delivery persons. Visit orders page.</p>
+  </div>
+{% endblock %}
