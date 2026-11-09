@@ -8,6 +8,8 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("restaurents/", views.view_restaurents, name="view_restaurents"),
     path("restaurents/<int:id>/", views.view_restaurent, name="view_restaurent"),
+    path("language/<str:code>/", views.set_language, name="set_language"),
+    path("invoice/<int:id>/", views.order_invoice, name="order_invoice"),
     # Auth
     path("login/", views.flogin, name="flogin"),
     path("register/", views.fregister, name="fregister"),
@@ -50,6 +52,7 @@ urlpatterns = [
     path(
         "res-owner/delete-food/<int:id>/", views.ro_delete_food, name="ro_delete_food"
     ),
+    path("res-owner/sales", views.ro_sales, name="ro_sales"),
     path("res-owner/list-order/", views.ro_list_orders, name="ro_list_orders"),
     path("res-owner/view-order/<int:id>/", views.ro_view_order, name="ro_view_order"),
     # res owner won't create orders

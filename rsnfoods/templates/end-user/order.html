@@ -20,6 +20,7 @@
           <strong>Total:</strong> {{ order.total }}<br />
           <strong>Payment Status:&nbsp;</strong>{{ order.payment_status }}
         </p>
+        <a href="{% url 'order_invoice' order.id %}" class="btn btn-outline-primary btn-sm">{{ t.view_invoice }}</a>
       </div>
     </div>
     {% comment %} {{ items }} {% endcomment %}
