@@ -13,9 +13,9 @@ from .models import (
 
 # Register your models here.
 
-admin.site.site_header = "RSN Foods Admin"
-admin.site.site_title = "RSN Foods Admin"
-admin.site.index_title = "Manage RSN Foods"
+admin.site.site_header = "FoodDemo Admin"
+admin.site.site_title = "FoodDemo Admin"
+admin.site.index_title = "Manage FoodDemo"
 
 
 class UserExAdmin(admin.ModelAdmin):
