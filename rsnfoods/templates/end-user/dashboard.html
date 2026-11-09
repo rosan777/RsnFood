@@ -1,8 +1,45 @@
 {% extends './user-base.html' %}
 
 {% block page_content %}
-  <div class="container p-4">
-    <h1 class="display-4">Welcome, {{ request.user }}</h1>
-    <p class="lead">This is a private area for delivery persons. Visit orders page.</p>
+  <div class="container py-4">
+    <div class="page-hero mb-4">
+      <h2 class="mb-1">{{ t.welcome }}, {{ request.user.first_name|default:request.user.username }}</h2>
+      <p class="mb-0">{{ t.user_intro }}</p>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card stat-card h-100">
+          <div class="card-body">
+            <div class="stat-number">{{ active_count }}</div>
+            <div class="stat-label">Active orders</div>
+          </div>
+          <div class="card-footer bg-transparent border-0 pb-3">
+            <a href="{% url 'enduser_orders' %}" class="btn btn-outline-primary btn-sm">My orders</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card stat-card h-100">
+          <div class="card-body">
+            <div class="stat-number">{{ orders_count }}</div>
+            <div class="stat-label">Total orders</div>
+          </div>
+          <div class="card-footer bg-transparent border-0 pb-3">
+            <a href="{% url 'enduser_orders' %}" class="btn btn-outline-primary btn-sm">Order history</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card stat-card h-100">
+          <div class="card-body">
+            <div class="stat-number">{{ cart_count }}</div>
+            <div class="stat-label">Items in cart</div>
+          </div>
+          <div class="card-footer bg-transparent border-0 pb-3">
+            <a href="{% url 'enduser_cart' %}" class="btn btn-outline-primary btn-sm">Open cart</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 {% endblock %}

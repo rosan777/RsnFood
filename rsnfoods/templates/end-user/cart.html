@@ -29,7 +29,10 @@
                   <td>{{ item.food.price }}</td>
                   <td>{{ item.quantity }}</td>
                   <td class="text-right">
-                    <a href="{% url 'enduser_remove_from_cart' item.id %}" class="btn btn-danger">Remove</a>
+                    <form action="{% url 'enduser_remove_from_cart' item.id %}" method="post" class="d-inline">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger">Remove</button>
+                    </form>
                   </td>
                 </tr>
               {% endfor %}
@@ -40,7 +43,10 @@
           </div>
         </div>
         <div class="card-footer d-flex justify-content-between">
-          <a href="{% url 'enduser_clear_cart' %}">Clear Cart</a>
+          <form action="{% url 'enduser_clear_cart' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-link p-0">Clear Cart</button>
+          </form>
           <a href="{% url 'enduser_checkout' %}" class="btn btn-primary">Make Order</a>
         </div>
       </div>
