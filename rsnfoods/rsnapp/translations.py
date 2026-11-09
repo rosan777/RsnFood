@@ -37,7 +37,8 @@ TEXTS = {
         "orders_by_status": "Orders by status",
         "no_sales": "No delivered orders yet.",
         "view_invoice": "View Invoice",
-        "footer": "demo Django food project",
+        "footer": "Django Food - (demo)",
+        "tech_title": "Technology used in this project",
     },
     "bn": {
         "welcome": "স্বাগতম",
@@ -74,6 +75,7 @@ TEXTS = {
         "orders_by_status": "স্ট্যাটাস অনুযায়ী অর্ডার",
         "no_sales": "এখনো কোনো অর্ডার ডেলিভারি হয়নি।",
         "view_invoice": "ইনভয়েস দেখুন",
-        "footer": "ডেমো জ্যাঙ্গো ফুড প্রজেক্ট",
+        "footer": "Django Food - (ডেমো)",
+        "tech_title": "এই প্রজেক্টে ব্যবহৃত টেকনোলজি",
     },
 }
