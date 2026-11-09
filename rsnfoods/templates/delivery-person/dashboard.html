@@ -1,8 +1,45 @@
 {% extends './delivery-base.html' %}
 
 {% block page_content %}
-  <div class="container p-4">
-    <h1 class="display-4">Welcome, {{ request.user }}</h1>
-    <p class="lead">This is a private area for delivery persons. Visit orders page.</p>
+  <div class="container py-4">
+    <div class="page-hero mb-4">
+      <h2 class="mb-1">Welcome, {{ request.user.first_name|default:request.user.username }}</h2>
+      <p class="mb-0">Your assigned deliveries are listed on the orders page.</p>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card stat-card h-100">
+          <div class="card-body">
+            <div class="stat-number">{{ assigned_count }}</div>
+            <div class="stat-label">New orders</div>
+          </div>
+          <div class="card-footer bg-transparent border-0 pb-3">
+            <a href="{% url 'dp_orders' %}" class="btn btn-outline-primary btn-sm">View orders</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card stat-card h-100">
+          <div class="card-body">
+            <div class="stat-number">{{ delivering_count }}</div>
+            <div class="stat-label">On the way</div>
+          </div>
+          <div class="card-footer bg-transparent border-0 pb-3">
+            <a href="{% url 'dp_orders' %}" class="btn btn-outline-primary btn-sm">View orders</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card stat-card h-100">
+          <div class="card-body">
+            <div class="stat-number">{{ completed_count }}</div>
+            <div class="stat-label">Delivered</div>
+          </div>
+          <div class="card-footer bg-transparent border-0 pb-3">
+            <a href="{% url 'dp_orders' %}" class="btn btn-outline-primary btn-sm">View orders</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 {% endblock %}

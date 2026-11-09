@@ -188,7 +188,17 @@ def redirect_to_dashboard(request):
 
 @restricted_access(allowed=["RestaurantOwner"])
 def ro_dashboard(request):
-    return render(request, "res-owner/dashboard.html")
+    orders = Order.objects.filter(restaurant__owner=request.user)
+    return render(
+        request,
+        "res-owner/dashboard.html",
+        context={
+            "restaurants_count": Restaurant.objects.filter(owner=request.user).count(),
+            "foods_count": Food.objects.filter(restaurant__owner=request.user).count(),
+            "orders_count": orders.count(),
+            "pending_count": orders.filter(status="Pending").count(),
+        },
+    )
 
 
 @restricted_access(allowed=["RestaurantOwner"])
@@ -577,10 +587,17 @@ def enduser_checkout(request):
 
 @restricted_access(allowed=["EndUser"])
 def enduser_dashboard(request):
-
+    orders = Order.objects.filter(user=request.user)
     return render(
         request,
         "end-user/dashboard.html",
+        context={
+            "orders_count": orders.count(),
+            "active_count": orders.exclude(
+                status__in=["Delivered", "Cancelled", "Returned"]
+            ).count(),
+            "cart_count": CartItem.objects.filter(cart__user=request.user).count(),
+        },
     )
 
 
@@ -606,7 +623,16 @@ def enduser_order(request, id):
 
 @restricted_access(allowed=["DeliveryPerson"])
 def dp_dashboard(request):
-    return render(request, "delivery-person/dashboard.html")
+    orders = Order.objects.filter(delivery_person=request.user)
+    return render(
+        request,
+        "delivery-person/dashboard.html",
+        context={
+            "assigned_count": orders.filter(status="Confirmed").count(),
+            "delivering_count": orders.filter(status="Delivering").count(),
+            "completed_count": orders.filter(status="Delivered").count(),
+        },
+    )
 
 
 @restricted_access(allowed=["DeliveryPerson"])
