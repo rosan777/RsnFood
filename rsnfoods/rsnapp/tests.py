@@ -290,6 +290,8 @@ class FoodPhotoTests(TestCase):
         self.assertContains(response, "photo-1639020715395-487e2d63b927")
         self.assertContains(response, "Served ice cold")
         self.assertContains(response, "&copy; 2024 FoodDemo")
+        self.assertContains(response, "Django Food - (demo)")
+        self.assertContains(response, "Technology used in this project")
 
     def test_uploaded_image_wins_over_image_url(self):
         owner = make_user("o", "RestaurantOwner")
