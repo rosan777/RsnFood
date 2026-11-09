@@ -8,6 +8,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("restaurents/", views.view_restaurents, name="view_restaurents"),
     path("restaurents/<int:id>/", views.view_restaurent, name="view_restaurent"),
+    path("project-profile/", views.project_profile, name="project_profile"),
     path("language/<str:code>/", views.set_language, name="set_language"),
     path("invoice/<int:id>/", views.order_invoice, name="order_invoice"),
     # Auth
