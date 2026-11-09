@@ -1,7 +1,11 @@
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 
-from rsnapp.models import UserEx, Address, Restaurant, Food
+from datetime import timedelta
+
+from django.utils import timezone
+
+from rsnapp.models import UserEx, Address, Restaurant, Food, Order, OrderItem
 
 # email, user type, phone; the password is the same as the email (matches the login page buttons)
 DEMO_USERS = [
@@ -59,5 +63,27 @@ class Command(BaseCommand):
                     show_on_site=True,
                 )
             self.stdout.write("created Demo Kitchen with foods")
+
+        # a few delivered orders so the owner's Sales page has something to show
+        customer = User.objects.get(email="enduser@example.com")
+        courier = User.objects.get(email="deliveryperson@example.com")
+        restaurant = Restaurant.objects.filter(owner=owner).first()
+        if restaurant and not Order.objects.filter(restaurant=restaurant).exists():
+            foods = list(Food.objects.filter(restaurant=restaurant))
+            for days_ago, food, quantity in [(0, foods[0], 2), (1, foods[1], 1), (3, foods[2], 3), (5, foods[0], 1)]:
+                order = Order.objects.create(
+                    user=customer,
+                    restaurant=restaurant,
+                    total=food.price * quantity,
+                    status="Delivered",
+                    payment_status="PAID",
+                    delivery_person=courier,
+                    delivery_address="12 Demo Road, Pabna",
+                )
+                Order.objects.filter(pk=order.pk).update(
+                    created_at=timezone.now() - timedelta(days=days_ago)
+                )
+                OrderItem.objects.create(order=order, food=food, quantity=quantity)
+            self.stdout.write("created sample delivered orders")
 
         self.stdout.write(self.style.SUCCESS("Demo data is ready."))
