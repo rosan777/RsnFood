@@ -1,0 +1,32 @@
+  <div class="container-xxl py-5 tech-section">
+    <div class="container">
+      <h2 class="tech-title mb-4">{{ t.tech_title }}</h2>
+      <div class="marquee">
+        <div class="marquee-track">
+          {% for i in '12' %}
+            <span class="tech-pill">Python</span><span class="tech-pill">Django 5</span><span class="tech-pill">Django ORM</span><span class="tech-pill">Django Templates</span><span class="tech-pill">PostgreSQL</span><span class="tech-pill">Neon</span><span class="tech-pill">SQLite</span>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="marquee mt-3">
+        <div class="marquee-track reverse">
+          {% for i in '12' %}
+            <span class="tech-pill">Bootstrap 4</span><span class="tech-pill">HTML</span><span class="tech-pill">CSS</span><span class="tech-pill">JavaScript</span><span class="tech-pill">jQuery</span><span class="tech-pill">WhiteNoise</span><span class="tech-pill">Pillow</span><span class="tech-pill">Vercel</span><span class="tech-pill">GitHub</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    /* Technology strip: two rows of pills that slide in opposite directions */
+    .tech-section { background: #0b0d12; margin-top: 2rem; }
+    .tech-title { color: #fff; font-weight: 700; font-size: 1.6rem; }
+    .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+    .marquee-track { display: flex; width: max-content; animation: slideLeft 28s linear infinite; }
+    .marquee-track.reverse { animation-name: slideRight; animation-duration: 34s; }
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+    .tech-pill { flex: none; margin-right: 14px; padding: 9px 26px; border-radius: 999px; background: #1f2630; border: 1px solid #333c4a; color: #c9d1e6; font-size: 0.95rem; transition: color 0.2s, border-color 0.2s, transform 0.2s; }
+    .tech-pill:hover { color: #fff; border-color: var(--rsn-accent); transform: translateY(-2px); }
+    @keyframes slideLeft { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes slideRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+  </style>
