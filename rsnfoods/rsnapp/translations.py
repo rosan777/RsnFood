@@ -5,6 +5,7 @@ TEXTS = {
     "en": {
         "welcome": "Welcome",
         "dashboard": "Dashboard",
+        "home": "Home",
         "orders": "Orders",
         "restaurants": "Restaurants",
         "foods": "Foods",
@@ -41,6 +42,7 @@ TEXTS = {
     "bn": {
         "welcome": "স্বাগতম",
         "dashboard": "ড্যাশবোর্ড",
+        "home": "হোম",
         "orders": "অর্ডার",
         "restaurants": "রেস্টুরেন্ট",
         "foods": "খাবার",
