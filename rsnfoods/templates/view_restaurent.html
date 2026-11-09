@@ -30,7 +30,10 @@
       {% for item in foods %}
         <div class="col-md-4">
           <div class="card mb-4">
-            <img style="height:200px;width:100%;object-fit:cover" class="p-2" src="{{ item.picture_url }}" class="card-img-top" alt="..." />
+            <div style="position:relative">
+              <button type="button" class="fav-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}" data-img="{{ item.picture_url }}" aria-label="Add to favorite">&#9825;</button>
+              <img style="height:200px;width:100%;object-fit:cover" class="p-2" src="{{ item.picture_url }}" class="card-img-top" alt="..." />
+            </div>
             <div class="card-body">
               <h5 class="card-title">{{ item.name }}</h5>
               <p class="card-text">{{ item.description }}</p>

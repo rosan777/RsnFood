@@ -82,6 +82,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                   <div class="food-card" style="animation-delay: {{ forloop.counter0 }}00ms">
                     <div class="photo-frame">
+                      <button type="button" class="fav-btn" data-id="{{ food.id }}" data-name="{{ food.name }}" data-price="{{ food.price }}" data-img="{{ food.picture_url }}" aria-label="Add to favorite">&#9825;</button>
                       {% if food.picture_url %}
                         <img src="{{ food.picture_url }}" alt="{{ food.name }}" loading="lazy" />
                       {% endif %}
