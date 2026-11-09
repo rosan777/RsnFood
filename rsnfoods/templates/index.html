@@ -68,10 +68,10 @@
     </div>
   </div>
 
-  <div class="container-xxl py-5 popular-section">
+  <div class="container-xxl py-5">
     <div class="container">
       <div class="text-center wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
-        <h5 class="section-title ff-secondary text-center fw-normal popular-kicker">Food Menu</h5>
+        <h5 class="section-title ff-secondary text-center text-primary fw-normal">Food Menu</h5>
         <h1 class="mb-5">Most Popular Items</h1>
       </div>
       <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
@@ -79,24 +79,21 @@
           <div id="" class="tab-pane fade show p-0 active">
             <div class="row">
               {% for food in foods %}
-                <div class="col-lg-6 mb-4">
-                  <div class="popular-item d-flex align-items-center">
-                    {% if food.picture_url %}
-                      <img class="flex-shrink-0 popular-photo" src="{{ food.picture_url }}" alt="{{ food.name }}" loading="lazy" />
-                    {% endif %}
-
-                    <!-- single -->
-                    <div class="w-100 d-flex flex-column text-start ps-4">
-                      <h5 class="d-flex justify-content-between border-bottom pb-2">
-                        <span>{{ food.name }}</span>
-                        <span class="popular-price">${{ food.price }}</span>
-                      </h5>
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                  <div class="food-card" style="animation-delay: {{ forloop.counter0 }}00ms">
+                    <div class="photo-frame">
+                      {% if food.picture_url %}
+                        <img src="{{ food.picture_url }}" alt="{{ food.name }}" loading="lazy" />
+                      {% endif %}
+                      <span class="price-tag">${{ food.price }}</span>
+                    </div>
+                    <div class="food-body text-start">
+                      <h5 class="mb-1">{{ food.name }}</h5>
                       <p class="text-muted mb-0">{{ food.description }}</p>
                       {% if 'Lassi' in food.name %}
                         <span class="ice-tag mt-2">&#129482; Served ice cold</span>
                       {% endif %}
                     </div>
-                    <!-- single end -->
                   </div>
                 </div>
               {% endfor %}
@@ -114,20 +111,19 @@
       </div>
       <div class="tab-class text-center wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
         <div class="t nt">
-          <div id="" class="row" style="gap:10px">
-            {% for food in restaurants %}
-              <!-- card with image -->
-
-              <div class="col card mb-3" style="max-width: 540px;">
-                <div class="row g-0">
-                  <div class="col-md-4">
-                    <img src="{% get_media_prefix %}{{ food.image }}" class="img-fluid rounded-start" alt="..." />
+          <div id="" class="row">
+            {% for restaurant in restaurants %}
+              <div class="col-lg-4 col-md-6 mb-4">
+                <div class="food-card" style="animation-delay: {{ forloop.counter0 }}00ms">
+                  <div class="photo-frame wide">
+                    {% if restaurant.picture_url %}
+                      <img src="{{ restaurant.picture_url }}" alt="{{ restaurant.name }}" loading="lazy" />
+                    {% endif %}
                   </div>
-                  <div class="col-md-8">
-                    <div class="card-body">
-                      <h5 class="card-title text-primary">{{ food.name }}</h5>
-                      <p class="card-text">{{ food.description }}</p>
-                    </div>
+                  <div class="food-body text-start">
+                    <h5 class="text-primary mb-1">{{ restaurant.name }}</h5>
+                    <p class="text-muted mb-2">{{ restaurant.address }}</p>
+                    <a href="{% url 'view_restaurent' restaurant.id %}" class="btn btn-sm btn-primary">Visit</a>
                   </div>
                 </div>
               </div>
@@ -138,13 +134,17 @@
     </div>
   </div>
   <style>
-    /* Most Popular Items: warm yellow look */
-    .popular-section { background: linear-gradient(180deg, #fff8dc 0%, #ffedaa 100%); }
-    .popular-kicker { color: #c98a00; }
-    .popular-item { background: #fff; border-radius: 16px; padding: 14px; height: 100%; border-bottom: 4px solid #ffc83d; box-shadow: 0 6px 18px rgba(201, 138, 0, 0.18); }
-    .popular-photo { width: 120px; height: 120px; object-fit: cover; border-radius: 14px; }
-    .popular-price { background: #ffc83d; color: #3b2a00; font-weight: 700; padding: 2px 12px; border-radius: 999px; }
-    .ice-tag { align-self: flex-start; background: #e3f6ff; color: #0a6c93; font-size: 0.8rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; }
+    /* Food and restaurant cards: clean white, one small yellow accent */
+    .food-card { background: #fff; border-radius: 14px; overflow: hidden; height: 100%; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); transition: transform 0.25s ease, box-shadow 0.25s ease; animation: cardIn 0.6s ease both; }
+    .food-card:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14); }
+    .photo-frame { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #f1f1f1; }
+    .photo-frame.wide { aspect-ratio: 16 / 9; }
+    .photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+    .food-card:hover .photo-frame img { transform: scale(1.07); }
+    .price-tag { position: absolute; right: 10px; bottom: 10px; background: #ffc83d; color: #3b2a00; font-weight: 700; padding: 2px 12px; border-radius: 999px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
+    .food-body { padding: 14px 16px 16px; }
+    .ice-tag { display: inline-block; background: #e3f6ff; color: #0a6c93; font-size: 0.8rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
     .hero-header {
       /*background: linear-gradient(rgba(15, 23, 43, 0.9), rgba(15, 23, 43, 0.9)), url();*/
       background-position: center center;
