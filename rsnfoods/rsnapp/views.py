@@ -1,6 +1,9 @@
 import random
+from datetime import timedelta
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.db.models import Count, Q, Sum
+from django.utils import timezone
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -14,6 +17,13 @@ from .models import UserEx, Restaurant, Address, Food, Cart, CartItem, Order, Or
 from .decorators import not_logged_in, login_required, restricted_access
 
 # Create your views here.
+
+
+### - Language toggle (English / Bangla), kept in the session
+def set_language(request, code):
+    if code in ("en", "bn"):
+        request.session["lang"] = code
+    return redirect(request.META.get("HTTP_REFERER") or "index")
 
 
 ### - Public Area
@@ -188,7 +198,17 @@ def redirect_to_dashboard(request):
 
 @restricted_access(allowed=["RestaurantOwner"])
 def ro_dashboard(request):
-    return render(request, "res-owner/dashboard.html")
+    orders = Order.objects.filter(restaurant__owner=request.user)
+    return render(
+        request,
+        "res-owner/dashboard.html",
+        context={
+            "restaurants_count": Restaurant.objects.filter(owner=request.user).count(),
+            "foods_count": Food.objects.filter(restaurant__owner=request.user).count(),
+            "orders_count": orders.count(),
+            "pending_count": orders.filter(status="Pending").count(),
+        },
+    )
 
 
 @restricted_access(allowed=["RestaurantOwner"])
@@ -379,9 +399,94 @@ def ro_delete_food(request, id):
 
 
 @restricted_access(allowed=["RestaurantOwner"])
+def ro_sales(request):
+    orders = Order.objects.filter(restaurant__owner=request.user)
+    delivered = orders.filter(status="Delivered")
+
+    # revenue of the last 7 days (delivered orders only), oldest day first
+    today = timezone.localdate()
+    days = []
+    for n in range(6, -1, -1):
+        day = today - timedelta(days=n)
+        total = (
+            delivered.filter(created_at__date=day).aggregate(t=Sum("total"))["t"] or 0
+        )
+        days.append({"day": day, "total": total})
+    max_total = max([d["total"] for d in days] + [1])
+    for d in days:
+        d["percent"] = int(d["total"] * 100 / max_total)
+
+    top_foods = (
+        OrderItem.objects.filter(order__in=delivered)
+        .values("food__name")
+        .annotate(qty=Sum("quantity"))
+        .order_by("-qty")[:5]
+    )
+
+    status_counts = []
+    for status, _ in Order.CHOICES:
+        status_counts.append({"status": status, "count": orders.filter(status=status).count()})
+
+    return render(
+        request,
+        "res-owner/sales.html",
+        context={
+            "revenue": delivered.aggregate(t=Sum("total"))["t"] or 0,
+            "orders_count": orders.count(),
+            "delivered_count": delivered.count(),
+            "days": days,
+            "top_foods": top_foods,
+            "status_counts": status_counts,
+        },
+    )
+
+
+@restricted_access(allowed=["EndUser", "RestaurantOwner"])
+def order_invoice(request, id):
+    if request.userEx.user_type == "EndUser":
+        order = Order.objects.filter(id=id, user=request.user).first()
+    else:
+        order = Order.objects.filter(id=id, restaurant__owner=request.user).first()
+    if not order:
+        return render(request, "error.html", {"error": "Order not found."})
+
+    lines = []
+    for item in OrderItem.objects.filter(order=order):
+        lines.append(
+            {
+                "name": item.food.name,
+                "quantity": item.quantity,
+                "price": item.food.price,
+                "line_total": item.food.price * item.quantity,
+            }
+        )
+
+    return render(
+        request,
+        "invoice.html",
+        context={"order": order, "lines": lines},
+    )
+
+
+@restricted_access(allowed=["RestaurantOwner"])
 def ro_list_orders(request):
     orders = Order.objects.filter(restaurant__owner=request.user).order_by("-pk")
     return render(request, "res-owner/list_orders.html", context={"orders": orders})
+
+
+def pick_delivery_person():
+    # least busy delivery person first, oldest account breaks a tie
+    return (
+        User.objects.filter(userex__user_type="DeliveryPerson")
+        .annotate(
+            active_orders=Count(
+                "delivery_person",
+                filter=Q(delivery_person__status__in=["Confirmed", "Delivering"]),
+            )
+        )
+        .order_by("active_orders", "id")
+        .first()
+    )
 
 
 @restricted_access(allowed=["RestaurantOwner"])
@@ -395,13 +500,14 @@ def ro_view_order(request, id):
     if request.method == "POST":
         order.status = request.POST["status"]
         if request.POST["status"] == "Confirmed" and not order.delivery_person:
-            # randomly choose delivery person
+            # smart assignment: choose the delivery person with the
+            # fewest active (Confirmed / Delivering) orders
             # on order confirmation from restaurant owner
 
-            delivery_persons = User.objects.filter(userex__user_type="DeliveryPerson")
+            delivery_person = pick_delivery_person()
 
-            if delivery_persons:
-                order.delivery_person = random.choice(delivery_persons)
+            if delivery_person:
+                order.delivery_person = delivery_person
             else:
                 # order is still confirmed, a delivery person is assigned
                 # when the owner saves "Confirmed" again later
@@ -577,10 +683,17 @@ def enduser_checkout(request):
 
 @restricted_access(allowed=["EndUser"])
 def enduser_dashboard(request):
-
+    orders = Order.objects.filter(user=request.user)
     return render(
         request,
         "end-user/dashboard.html",
+        context={
+            "orders_count": orders.count(),
+            "active_count": orders.exclude(
+                status__in=["Delivered", "Cancelled", "Returned"]
+            ).count(),
+            "cart_count": CartItem.objects.filter(cart__user=request.user).count(),
+        },
     )
 
 
@@ -606,7 +719,16 @@ def enduser_order(request, id):
 
 @restricted_access(allowed=["DeliveryPerson"])
 def dp_dashboard(request):
-    return render(request, "delivery-person/dashboard.html")
+    orders = Order.objects.filter(delivery_person=request.user)
+    return render(
+        request,
+        "delivery-person/dashboard.html",
+        context={
+            "assigned_count": orders.filter(status="Confirmed").count(),
+            "delivering_count": orders.filter(status="Delivering").count(),
+            "completed_count": orders.filter(status="Delivered").count(),
+        },
+    )
 
 
 @restricted_access(allowed=["DeliveryPerson"])

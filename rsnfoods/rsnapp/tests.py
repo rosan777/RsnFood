@@ -164,3 +164,115 @@ class OrderFlowTests(BaseTestCase):
             {"email": "delivery@test.com", "password": "pass12345"},
         )
         self.assertRedirects(response, reverse("dp_dashboard"))
+
+
+class DashboardTests(BaseTestCase):
+    def test_each_dashboard_loads_with_counts(self):
+        for user, url_name in [
+            (self.owner1, "ro_dashboard"),
+            (self.customer, "enduser_dashboard"),
+            (self.delivery, "dp_dashboard"),
+        ]:
+            self.client.logout()
+            self.login(user)
+            response = self.client.get(reverse(url_name))
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, "Welcome")
+
+    def test_admin_pages_load(self):
+        admin_user = User.objects.create_superuser("boss", "boss@test.com", "pass12345")
+        self.client.force_login(admin_user)
+        for name in ["restaurant", "food", "order", "userex", "cart"]:
+            response = self.client.get(f"/admin/rsnapp/{name}/")
+            self.assertEqual(response.status_code, 200, name)
+
+
+class FeatureTests(BaseTestCase):
+    def make_order(self, user, restaurant, status="Delivered", total=300):
+        order = Order.objects.create(
+            user=user, restaurant=restaurant, total=total, status=status
+        )
+        OrderItem.objects.create(order=order, food=self.food1, quantity=3)
+        return order
+
+    def test_invoice_for_customer_and_owner_only(self):
+        order = self.make_order(self.customer, self.res1)
+        url = reverse("order_invoice", args=[order.id])
+
+        for user in [self.customer, self.owner1]:
+            self.client.logout()
+            self.login(user)
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, "Burger")
+            self.assertContains(response, "300")
+
+        for user in [self.customer2, self.owner2]:
+            self.client.logout()
+            self.login(user)
+            self.assertContains(self.client.get(url), "Order not found.")
+
+        self.client.logout()
+        self.login(self.delivery)
+        self.assertContains(self.client.get(url), "not authorized")
+
+    def test_sales_page_counts_only_delivered_orders(self):
+        self.make_order(self.customer, self.res1, "Delivered", 300)
+        self.make_order(self.customer, self.res1, "Pending", 999)
+        self.make_order(self.customer, self.res2, "Delivered", 555)
+        self.login(self.owner1)
+        response = self.client.get(reverse("ro_sales"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["revenue"], 300)
+        self.assertEqual(response.context["orders_count"], 2)
+        self.assertEqual(response.context["top_foods"][0]["qty"], 3)
+
+    def test_sales_page_is_owner_only(self):
+        self.login(self.customer)
+        self.assertContains(self.client.get(reverse("ro_sales")), "not authorized")
+
+    def test_smart_assignment_picks_least_busy_delivery_person(self):
+        busy = self.delivery
+        free = make_user("delivery2", "DeliveryPerson")
+        busy_order = self.make_order(self.customer, self.res1, "Confirmed")
+        busy_order.delivery_person = busy
+        busy_order.save()
+
+        new_order = self.make_order(self.customer2, self.res1, "Pending")
+        self.login(self.owner1)
+        self.client.post(
+            reverse("ro_view_order", args=[new_order.id]), {"status": "Confirmed"}
+        )
+        new_order.refresh_from_db()
+        self.assertEqual(new_order.delivery_person, free)
+
+    def test_language_toggle_switches_to_bangla_and_back(self):
+        self.login(self.customer)
+        self.client.get(reverse("set_language", args=["bn"]))
+        self.assertContains(self.client.get(reverse("enduser_dashboard")), "স্বাগতম")
+        self.client.get(reverse("set_language", args=["en"]))
+        self.assertContains(self.client.get(reverse("enduser_dashboard")), "Welcome")
+
+    def test_language_toggle_ignores_unknown_code(self):
+        self.client.get(reverse("set_language", args=["xx"]))
+        self.assertContains(self.client.get(reverse("index")), "All Restaurants")
+
+
+class SeedDemoTests(TestCase):
+    def test_seed_demo_creates_data_once_and_logins_work(self):
+        from django.core.management import call_command
+
+        call_command("seed_demo")
+        call_command("seed_demo")
+        self.assertEqual(User.objects.filter(email__endswith="@example.com").count(), 3)
+        self.assertEqual(Restaurant.objects.count(), 1)
+        self.assertEqual(Food.objects.count(), 4)
+        self.assertEqual(Order.objects.count(), 4)
+
+        response = self.client.post(
+            reverse("flogin"),
+            {"email": "resowner@example.com", "password": "resowner@example.com"},
+        )
+        self.assertRedirects(response, reverse("ro_dashboard"))
+        sales = self.client.get(reverse("ro_sales"))
+        self.assertContains(sales, "Chicken Biryani")
