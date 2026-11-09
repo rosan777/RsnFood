@@ -70,6 +70,10 @@
         </ul>
       </div>
       <div class="">
+        <div class="dropdown d-inline-block fav-wrap">
+          <button type="button" class="btn btn-outline-light fav-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ t.favorites }}">&#9829; <span id="fav-count" class="fav-count">0</span></button>
+          <div class="dropdown-menu dropdown-menu-right fav-menu" id="fav-menu" data-empty="{{ t.no_favorites }}"></div>
+        </div>
         <a href="{% if lang == 'en' %}{% url 'set_language' 'bn' %}{% else %}{% url 'set_language' 'en' %}{% endif %}" class="btn btn-outline-light">{{ t.other_language }}</a>
         {% if user.is_authenticated %}
           <a href="{% url 'logout' %}" class="btn btn-outline-light">{{ t.logout }}</a>
@@ -168,12 +172,93 @@
     .stat-card .stat-number { font-size: 2.4rem; font-weight: 700; color: var(--rsn-accent); line-height: 1.1; }
     .stat-card .stat-label { color: #5b6477; }
     .badge-status { font-weight: 600; padding: 0.4em 0.8em; border-radius: 999px; }
+    .fav-count { font-size: 0.8rem; font-weight: 700; }
+    .fav-menu { min-width: 280px; max-height: 360px; overflow-y: auto; padding: 6px 0; }
+    .fav-empty { padding: 12px 16px; color: #5b6477; font-size: 0.9rem; }
+    .fav-item { display: flex; align-items: center; padding: 6px 12px; }
+    .fav-item img { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; margin-right: 10px; background: #f1f1f1; }
+    .fav-item .fav-name { flex: 1; font-weight: 600; font-size: 0.9rem; }
+    .fav-item .fav-price { color: #5b6477; font-size: 0.8rem; }
+    .fav-remove { border: 0; background: none; color: #a0a7b8; font-size: 1.2rem; line-height: 1; padding: 0 6px; cursor: pointer; }
+    .fav-remove:hover { color: #d62839; }
+    .fav-btn { position: absolute; top: 10px; left: 10px; width: 38px; height: 38px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.92); color: #9aa1b2; font-size: 1.25rem; line-height: 1; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); cursor: pointer; transition: transform 0.2s, color 0.2s; z-index: 2; }
+    .fav-btn:hover { transform: scale(1.12); }
+    .fav-btn.active { color: #e0245e; animation: heartPop 0.35s ease; }
+    @keyframes heartPop { 0% { transform: scale(0.7); } 60% { transform: scale(1.35); } 100% { transform: scale(1); } }
     .site-footer { margin-top: 3rem; padding: 1.75rem 0; background: var(--rsn-dark); border-top: 3px solid var(--rsn-accent); color: #aeb6c9; font-size: 0.85rem; }
     .site-footer .footer-brand { color: #fff; font-weight: 700; font-size: 1.1rem; }
     .site-footer .footer-brand::before { content: '\1F374  '; }
     .site-footer .footer-links a { color: #c9d1e6; margin: 0 0.6rem; }
     .site-footer .footer-links a:hover { color: var(--rsn-accent); text-decoration: none; }
   </style>
+  <script>
+    // favorites live in this browser (localStorage); heart on a food adds it, x in the header removes it
+    document.addEventListener('DOMContentLoaded', function () {
+      const KEY = 'fooddemo_favs'
+      const read = function () { try { return JSON.parse(localStorage.getItem(KEY)) || [] } catch (e) { return [] } }
+      const save = function (list) { try { localStorage.setItem(KEY, JSON.stringify(list)) } catch (e) {} }
+      let favs = read()
+      const menu = document.getElementById('fav-menu')
+      const count = document.getElementById('fav-count')
+
+      function render() {
+        count.textContent = favs.length
+        menu.innerHTML = ''
+        if (!favs.length) {
+          const empty = document.createElement('div')
+          empty.className = 'fav-empty'
+          empty.textContent = menu.dataset.empty
+          menu.appendChild(empty)
+        }
+        favs.forEach(function (f) {
+          const row = document.createElement('div')
+          row.className = 'fav-item'
+          const img = document.createElement('img')
+          img.src = f.img
+          img.alt = ''
+          const info = document.createElement('div')
+          info.className = 'fav-name'
+          info.textContent = f.name
+          const price = document.createElement('div')
+          price.className = 'fav-price'
+          price.textContent = '$' + f.price
+          info.appendChild(price)
+          const del = document.createElement('button')
+          del.type = 'button'
+          del.className = 'fav-remove'
+          del.innerHTML = '&times;'
+          del.addEventListener('click', function (e) {
+            e.stopPropagation()
+            favs = favs.filter(function (x) { return x.id !== f.id })
+            save(favs)
+            render()
+          })
+          row.appendChild(img)
+          row.appendChild(info)
+          row.appendChild(del)
+          menu.appendChild(row)
+        })
+        document.querySelectorAll('.fav-btn').forEach(function (b) {
+          const on = favs.some(function (x) { return x.id === b.dataset.id })
+          b.classList.toggle('active', on)
+          b.innerHTML = on ? '&#9829;' : '&#9825;'
+        })
+      }
+
+      document.querySelectorAll('.fav-btn').forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (favs.some(function (x) { return x.id === b.dataset.id })) {
+            favs = favs.filter(function (x) { return x.id !== b.dataset.id })
+          } else {
+            favs.push({ id: b.dataset.id, name: b.dataset.name, price: b.dataset.price, img: b.dataset.img })
+          }
+          save(favs)
+          render()
+        })
+      })
+      render()
+    })
+  </script>
   <script>
     // turn plain status words inside table cells into coloured badges
     document.addEventListener('DOMContentLoaded', function () {
