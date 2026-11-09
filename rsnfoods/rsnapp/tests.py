@@ -303,6 +303,8 @@ class FoodPhotoTests(TestCase):
         self.assertContains(response, "Django Food - (demo)")
         self.assertContains(response, "Technology used in this project")
         self.assertContains(response, 'class="fav-btn"')
+        self.assertContains(response, 'id="typed-word"')
+        self.assertContains(response, 'class="resto-strip"')
         self.assertContains(response, 'id="fav-menu"')
 
     def test_uploaded_image_wins_over_image_url(self):
