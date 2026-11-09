@@ -15,7 +15,7 @@
     <div class="container my-5 py-5">
       <div class="row align-items-center g-5">
         <div class="col-lg-6 text-center text-lg-start">
-          <h1 class="display-3 text-white animated slideInLeft">Enjoy Our<br />Delicious Meal</h1>
+          <h1 class="display-3 text-white animated slideInLeft">Enjoy Our<br /><span id="typed-word" data-words="Delicious Meal|Fresh Burgers|Hot Pizza|Sweet Desserts">Delicious Meal</span><span class="type-cursor">|</span></h1>
           <p class="text-white animated slideInLeft mb-4 pb-2">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet</p>
           <a href="" class="btn btn-primary py-sm-3 px-sm-5 me-3 animated slideInLeft">Book A Table</a>
         </div>
@@ -25,6 +25,19 @@
       </div>
     </div>
   </div>
+  <div class="resto-strip" aria-label="Restaurants">
+    <div class="resto-track">
+      {% for i in '12' %}
+        {% for restaurant in restaurants %}
+          <a class="resto-chip" href="{% url 'view_restaurent' restaurant.id %}">
+            {% if restaurant.picture_url %}<img src="{{ restaurant.picture_url }}" alt="" loading="lazy" />{% endif %}
+            <span>{{ restaurant.name }}</span>
+          </a>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+
   <div class="container-xxl py-5">
     <div class="container">
       <div class="row g-4">
@@ -147,6 +160,18 @@
     .food-body { padding: 14px 16px 16px; }
     .ice-tag { display: inline-block; background: #e3f6ff; color: #0a6c93; font-size: 0.8rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; }
     @keyframes cardIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+    /* Hero: typed word with a blinking cursor, and a sliding restaurant strip */
+    #typed-word { display: inline-block; min-height: 1.2em; }
+    .type-cursor { color: #ffc83d; font-weight: 300; animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .resto-strip { overflow: hidden; background: #0b0d12; padding: 14px 0; margin-top: -3rem; margin-bottom: 1rem; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+    .resto-track { display: flex; width: max-content; animation: slideLeft 40s linear infinite; }
+    .resto-strip:hover .resto-track { animation-play-state: paused; }
+    .resto-chip { flex: none; display: flex; align-items: center; margin-right: 14px; padding: 6px 20px 6px 6px; border-radius: 999px; background: #1f2630; border: 1px solid #333c4a; color: #c9d1e6; transition: border-color 0.2s, transform 0.2s, color 0.2s; }
+    .resto-chip img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; }
+    .resto-chip:hover { color: #fff; border-color: var(--rsn-accent); transform: translateY(-2px); text-decoration: none; }
+    @keyframes slideLeft { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media (prefers-reduced-motion: reduce) { .type-cursor, .resto-track { animation: none; } }
     .hero-header {
       /*background: linear-gradient(rgba(15, 23, 43, 0.9), rgba(15, 23, 43, 0.9)), url();*/
       background-position: center center;
@@ -200,4 +225,23 @@
     }
   </style>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+  <script>
+    // hero: the second line types out each word in turn (the full text stays if scripts or motion are off)
+    document.addEventListener('DOMContentLoaded', function () {
+      const el = document.getElementById('typed-word')
+      if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+      const words = el.dataset.words.split('|')
+      let w = 0, c = el.textContent.length, deleting = true
+      function tick() {
+        const word = words[w]
+        el.textContent = word.slice(0, c)
+        let delay = deleting ? 45 : 90
+        if (!deleting && c === word.length) { deleting = true; delay = 1600 }
+        else if (deleting && c === 0) { deleting = false; w = (w + 1) % words.length; delay = 250 }
+        else { c += deleting ? -1 : 1 }
+        setTimeout(tick, delay)
+      }
+      setTimeout(function () { deleting = true; tick() }, 1800)
+    })
+  </script>
 {% endblock %}
