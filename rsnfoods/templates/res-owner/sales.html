@@ -1,0 +1,88 @@
+{% extends './owner-base.html' %}
+
+{% block res_content %}
+  <div class="container py-4">
+    <div class="page-hero mb-4">
+      <h2 class="mb-1">{{ t.sales }}</h2>
+      <p class="mb-0">{{ t.owner_intro }}</p>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card stat-card h-100">
+          <div class="card-body">
+            <div class="stat-number">{{ revenue }}</div>
+            <div class="stat-label">{{ t.revenue }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card stat-card h-100">
+          <div class="card-body">
+            <div class="stat-number">{{ orders_count }}</div>
+            <div class="stat-label">{{ t.orders_total }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card stat-card h-100">
+          <div class="card-body">
+            <div class="stat-number">{{ delivered_count }}</div>
+            <div class="stat-label">{{ t.delivered }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <h3>{{ t.last_7_days }}</h3>
+      </div>
+      <div class="card-body">
+        {% for d in days %}
+          <div class="d-flex align-items-center mb-2">
+            <div style="width: 90px;">{{ d.day|date:"d M" }}</div>
+            <div class="flex-grow-1 mx-2" style="background: #eef0f6; border-radius: 6px; height: 18px;">
+              <div style="width: {{ d.percent }}%; background: #f2682b; height: 18px; border-radius: 6px;"></div>
+            </div>
+            <div style="width: 80px;" class="text-right">{{ d.total }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <div class="card h-100">
+          <div class="card-header">
+            <h3>{{ t.top_foods }}</h3>
+          </div>
+          <div class="card-body">
+            {% for f in top_foods %}
+              <div class="d-flex justify-content-between border-bottom py-2">
+                <span>{{ f.food__name }}</span>
+                <strong>{{ f.qty }}</strong>
+              </div>
+            {% empty %}
+              <p class="mb-0">{{ t.no_sales }}</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-4">
+        <div class="card h-100">
+          <div class="card-header">
+            <h3>{{ t.orders_by_status }}</h3>
+          </div>
+          <div class="card-body">
+            {% for s in status_counts %}
+              <div class="d-flex justify-content-between border-bottom py-2">
+                <span>{{ s.status }}</span>
+                <strong>{{ s.count }}</strong>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
