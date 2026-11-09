@@ -258,6 +258,16 @@ class FeatureTests(BaseTestCase):
         self.assertContains(self.client.get(reverse("index")), "All Restaurants")
 
 
+class ProjectProfileTests(TestCase):
+    def test_profile_page_is_public_and_linked_in_footer(self):
+        response = self.client.get(reverse("project_profile"), HTTP_HOST="localhost")
+        self.assertContains(response, "Project")
+        self.assertContains(response, "Delivery person")
+        self.assertContains(response, "Technology used in this project")
+        home = self.client.get(reverse("index"), HTTP_HOST="localhost")
+        self.assertContains(home, reverse("project_profile"))
+
+
 class SeedDemoTests(TestCase):
     def test_seed_demo_creates_data_once_and_logins_work(self):
         from django.core.management import call_command

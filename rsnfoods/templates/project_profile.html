@@ -1,0 +1,243 @@
+{% extends './base.html' %}
+{% block content %}
+  <div class="demo-ticker" aria-label="Demo notice">
+    <div class="ticker-track">
+      {% for i in '12' %}
+        <span>Demo project</span><span>&#9679;</span><span>Sample data only</span><span>&#9679;</span><span>Payments are simulated</span><span>&#9679;</span><span>Built with Django</span><span>&#9679;</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <header class="pp-hero">
+    <div class="pp-blob pp-blob-a"></div>
+    <div class="pp-blob pp-blob-b"></div>
+    <div class="container text-center position-relative">
+      <p class="pp-eyebrow">Django Food - (demo)</p>
+      <h1 class="pp-title">Project <em>Profile</em></h1>
+      <p class="pp-tagline">A food delivery platform where customers, restaurants and couriers all work in one place.</p>
+      <p class="pp-lines">Order &nbsp;&middot;&nbsp; Prepare &nbsp;&middot;&nbsp; Deliver &nbsp;&middot;&nbsp; Report</p>
+      <div class="mt-4">
+        <a href="{% url 'view_restaurents' %}" class="btn btn-primary btn-lg mr-2 mb-2">Browse restaurants</a>
+        <a href="{% url 'flogin' %}" class="btn btn-outline-light btn-lg mb-2">Try a demo login</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="pp-section reveal">
+    <div class="container">
+      <p class="pp-eyebrow dark">Read this first</p>
+      <h2 class="pp-h2">This is a demo, not a real shop</h2>
+      <div class="row">
+        <div class="col-lg-7">
+          <p>Django Food is a demo project built to show how a complete food delivery system is put together. Every restaurant, food item, price and order you see is sample data. Nothing here is sold, cooked or delivered, and no real money moves.</p>
+          <p>The structure is real though: separate logins and screens for each role, a working cart, orders that move through stages, invoices and a sales report. The same base can grow into a real service by adding the pieces listed further down this page.</p>
+        </div>
+        <div class="col-lg-5">
+          <ul class="pp-keys">
+            <li><span>Type</span>Demo project (v0.0.0)</li>
+            <li><span>Stack</span>Django, PostgreSQL, Bootstrap</li>
+            <li><span>Data</span>Sample restaurants and foods</li>
+            <li><span>Payments</span>Simulated (cash on delivery flow)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pp-section pp-alt reveal">
+    <div class="container">
+      <p class="pp-eyebrow dark">Who uses it</p>
+      <h2 class="pp-h2">Four roles, each with its own side</h2>
+      <div class="row">
+        <div class="col-md-6 col-lg-3 mb-4">
+          <div class="pp-card"><span class="pp-num">01</span><h3>Customer</h3>
+            <ul>
+              <li>Browse restaurants and menus</li>
+              <li>Heart foods into favorites</li>
+              <li>Add to cart, remove, clear</li>
+              <li>Checkout with a delivery address</li>
+              <li>Follow order status, open invoice</li>
+              <li>English and Bangla</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3 mb-4">
+          <div class="pp-card"><span class="pp-num">02</span><h3>Restaurant owner</h3>
+            <ul>
+              <li>Add and edit restaurants and foods</li>
+              <li>Upload photos</li>
+              <li>Review and confirm new orders</li>
+              <li>Sales page: revenue, last 7 days, top foods</li>
+              <li>Print invoices</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3 mb-4">
+          <div class="pp-card"><span class="pp-num">03</span><h3>Delivery person</h3>
+            <ul>
+              <li>See assigned orders</li>
+              <li>Mark an order as delivering, then delivered</li>
+              <li>Update payment status on handover</li>
+              <li>View customer address and phone</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3 mb-4">
+          <div class="pp-card"><span class="pp-num">04</span><h3>Admin</h3>
+            <ul>
+              <li>Manage users and roles</li>
+              <li>Choose which restaurants and foods appear on the home page</li>
+              <li>Inspect every order</li>
+              <li>Uses the built-in Django admin</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pp-section reveal">
+    <div class="container">
+      <p class="pp-eyebrow dark">How an order moves</p>
+      <h2 class="pp-h2">One order, three people</h2>
+      <div class="pp-flow">
+        <div class="pp-step"><b>1</b><span>Customer adds food to the cart</span></div>
+        <div class="pp-step"><b>2</b><span>Checkout creates the order</span></div>
+        <div class="pp-step"><b>3</b><span>Owner confirms it</span></div>
+        <div class="pp-step"><b>4</b><span>A courier is assigned automatically</span></div>
+        <div class="pp-step"><b>5</b><span>Courier delivers and collects payment</span></div>
+        <div class="pp-step"><b>6</b><span>Sales report and invoice update</span></div>
+      </div>
+      <p class="mt-4 text-muted">The courier is picked automatically: the delivery person with the fewest active orders gets the next one, so work spreads out evenly.</p>
+    </div>
+  </section>
+
+  <section class="pp-section pp-alt reveal">
+    <div class="container">
+      <p class="pp-eyebrow dark">What works today</p>
+      <h2 class="pp-h2">Built and running in this demo</h2>
+      <div class="row">
+        {% for title, text in features %}
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="pp-card small-card"><span class="pp-num">{{ forloop.counter|stringformat:"02d" }}</span><h3>{{ title }}</h3><p>{{ text }}</p></div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="pp-section reveal">
+    <div class="container">
+      <p class="pp-eyebrow dark">What we can offer next</p>
+      <h2 class="pp-h2">From demo to a real service</h2>
+      <p class="mb-4">None of the items below are built yet. They show where the project can go, and each one plugs into the existing structure without a rewrite.</p>
+      <div class="row">
+        {% for group, items in roadmap %}
+          <div class="col-md-6 mb-4">
+            <div class="pp-card"><span class="pp-num">{{ forloop.counter|stringformat:"02d" }}</span><h3>{{ group }}</h3>
+              <ul>{% for item in items %}<li>{{ item }}</li>{% endfor %}</ul>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="pp-section pp-alt reveal">
+    <div class="container">
+      <p class="pp-eyebrow dark">Admin side</p>
+      <h2 class="pp-h2">Stock, accounts and AI</h2>
+      <div class="row">
+        <div class="col-md-4 mb-4"><div class="pp-card small-card"><h3>Stock</h3><p>Track ingredients and portions per restaurant, hide a food automatically when it runs out, and warn the owner before it does.</p></div></div>
+        <div class="col-md-4 mb-4"><div class="pp-card small-card"><h3>Accounts</h3><p>Daily income, expenses, courier payouts and a profit view, built on the same order data the Sales page already reads.</p></div></div>
+        <div class="col-md-4 mb-4"><div class="pp-card small-card"><h3>AI</h3><p>Food suggestions from past orders, demand forecasts for busy hours, a chat helper for customers and smarter delivery time estimates.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  {% include '_tech_strip.html' %}
+
+  <section class="pp-section reveal">
+    <div class="container">
+      <p class="pp-eyebrow dark">Mobile and browsers</p>
+      <h2 class="pp-h2">Made to fit every screen</h2>
+      <p>The site uses a responsive layout, so pages reflow for phones, tablets and desktops, including iPhone and Android browsers. Tables scroll sideways on small screens instead of breaking the page.</p>
+      <div class="pp-chips">
+        <span>iPhone</span><span>Android</span><span>Tablet</span><span>Laptop</span><span>Desktop</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="pp-cta reveal">
+    <div class="container text-center">
+      <h2>Take a look around</h2>
+      <p>Log in as a customer, an owner or a courier from the login page and try each side.</p>
+      <a href="{% url 'flogin' %}" class="btn btn-primary btn-lg mr-2 mb-2">Open demo login</a>
+      <a href="{% url 'index' %}" class="btn btn-outline-light btn-lg mb-2">Back to home</a>
+    </div>
+  </section>
+
+  <style>
+    .demo-ticker { background: #ffc83d; color: #3b2a00; overflow: hidden; font-size: 0.85rem; font-weight: 600; }
+    .ticker-track { display: flex; width: max-content; animation: slideLeft 30s linear infinite; padding: 7px 0; }
+    .ticker-track span { flex: none; margin-right: 22px; }
+    .pp-hero { position: relative; overflow: hidden; background: linear-gradient(135deg, #0b0d12, #1b2336 60%, #2e3b5e); color: #fff; padding: 90px 0 80px; }
+    .pp-blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.45; animation: floaty 9s ease-in-out infinite; }
+    .pp-blob-a { width: 320px; height: 320px; background: #f2682b; top: -90px; left: -60px; }
+    .pp-blob-b { width: 280px; height: 280px; background: #ffc83d; bottom: -100px; right: -40px; animation-delay: -4s; opacity: 0.3; }
+    @keyframes floaty { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(30px, 24px); } }
+    .pp-eyebrow { text-transform: uppercase; letter-spacing: 0.18em; font-size: 0.78rem; color: #ffc83d; margin-bottom: 0.6rem; }
+    .pp-eyebrow.dark { color: var(--rsn-accent); }
+    .pp-title { font-size: clamp(2.4rem, 7vw, 4.2rem); font-weight: 800; }
+    .pp-title em { font-style: italic; color: #ffc83d; }
+    .pp-tagline { max-width: 620px; margin: 1rem auto 0; color: #c9d1e6; font-size: 1.1rem; }
+    .pp-lines { margin-top: 1.4rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+    .pp-section { padding: 64px 0; }
+    .pp-alt { background: #fff; }
+    .pp-h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700; margin-bottom: 1.5rem; }
+    .pp-keys { list-style: none; padding: 0; margin: 0; background: #fff; border-radius: 14px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); }
+    .pp-keys li { padding: 12px 18px; border-bottom: 1px solid #eef0f6; }
+    .pp-keys li:last-child { border-bottom: 0; }
+    .pp-keys span { display: inline-block; width: 90px; color: #8a92a6; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .pp-card { position: relative; background: #fff; border-radius: 14px; padding: 26px 22px 22px; height: 100%; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); border-top: 3px solid var(--rsn-accent); transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .pp-alt .pp-card { background: #f8f9fc; }
+    .pp-card:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14); }
+    .pp-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.7rem; }
+    .pp-card ul { padding-left: 1.1rem; margin: 0; }
+    .pp-card li { margin-bottom: 4px; }
+    .pp-card p { margin: 0; color: #5b6477; }
+    .pp-num { position: absolute; top: 14px; right: 18px; font-weight: 800; color: #e3e6ef; font-size: 1.6rem; }
+    .pp-flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+    .pp-step { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); text-align: center; }
+    .pp-step b { display: inline-block; width: 34px; height: 34px; line-height: 34px; border-radius: 50%; background: var(--rsn-accent); color: #fff; margin-bottom: 8px; }
+    .pp-step span { display: block; font-size: 0.9rem; }
+    .pp-chips span { display: inline-block; margin: 6px 8px 0 0; padding: 7px 18px; border-radius: 999px; background: #fff; border: 1px solid #dfe3ee; font-weight: 600; }
+    .pp-cta { background: linear-gradient(135deg, #1b2336, #2e3b5e); color: #fff; padding: 64px 0; }
+    .pp-cta p { color: #c9d1e6; }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .ticker-track, .marquee-track, .pp-blob { animation: none; }
+    }
+  </style>
+  <script>
+    // sections fade in as they scroll into view
+    document.addEventListener('DOMContentLoaded', function () {
+      const items = document.querySelectorAll('.reveal')
+      if (!('IntersectionObserver' in window)) {
+        items.forEach(function (el) { el.classList.add('visible') })
+        return
+      }
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible')
+            io.unobserve(e.target)
+          }
+        })
+      }, { threshold: 0.12 })
+      items.forEach(function (el) { io.observe(el) })
+    })
+  </script>
+{% endblock %}
