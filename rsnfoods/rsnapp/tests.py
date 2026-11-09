@@ -256,3 +256,23 @@ class FeatureTests(BaseTestCase):
     def test_language_toggle_ignores_unknown_code(self):
         self.client.get(reverse("set_language", args=["xx"]))
         self.assertContains(self.client.get(reverse("index")), "All Restaurants")
+
+
+class SeedDemoTests(TestCase):
+    def test_seed_demo_creates_data_once_and_logins_work(self):
+        from django.core.management import call_command
+
+        call_command("seed_demo")
+        call_command("seed_demo")
+        self.assertEqual(User.objects.filter(email__endswith="@example.com").count(), 3)
+        self.assertEqual(Restaurant.objects.count(), 1)
+        self.assertEqual(Food.objects.count(), 4)
+        self.assertEqual(Order.objects.count(), 4)
+
+        response = self.client.post(
+            reverse("flogin"),
+            {"email": "resowner@example.com", "password": "resowner@example.com"},
+        )
+        self.assertRedirects(response, reverse("ro_dashboard"))
+        sales = self.client.get(reverse("ro_sales"))
+        self.assertContains(sales, "Chicken Biryani")
