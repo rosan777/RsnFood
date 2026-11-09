@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -75,10 +76,18 @@ class Food(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to="food", null=True, blank=True)
+    # optional photo link, used when no image was uploaded (uploads do not persist on Vercel)
+    image_url = models.URLField(max_length=500, blank=True, default="")
     price = models.FloatField(default=0.0)
 
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     show_on_site = models.BooleanField(default=False)  # handled by admin
+
+    @property
+    def picture_url(self):
+        if self.image:
+            return f"{settings.MEDIA_URL}{self.image}"
+        return self.image_url
 
     def __str__(self):
         return f"{self.name} - {self.description} - {self.price}"

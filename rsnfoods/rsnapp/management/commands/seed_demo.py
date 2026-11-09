@@ -14,11 +14,34 @@ DEMO_USERS = [
     ("deliveryperson@example.com", "DeliveryPerson", "01700000003"),
 ]
 
+# Photos come from Wikimedia Commons (free licences, see the credits in README.md)
+COMMONS = "https://commons.wikimedia.org/wiki/Special:FilePath/"
+
 DEMO_FOODS = [
-    ("Chicken Biryani", "Fragrant rice with spiced chicken", 220.0),
-    ("Beef Burger", "Juicy beef patty with cheese", 180.0),
-    ("Chicken Fry (4 pcs)", "Crispy fried chicken", 250.0),
-    ("Mango Lassi", "Cold and sweet yogurt drink", 90.0),
+    (
+        "Chicken Biryani",
+        "Fragrant rice with spiced chicken",
+        220.0,
+        COMMONS + "Chicken_Hyderabadi_Biryani.JPG?width=900",
+    ),
+    (
+        "Beef Burger",
+        "Juicy beef patty with cheese",
+        180.0,
+        COMMONS + "NYC-Diner-Bacon-Cheeseburger.jpg?width=900",
+    ),
+    (
+        "Chicken Fry (4 pcs)",
+        "Crispy fried chicken",
+        250.0,
+        COMMONS + "Fried-Chicken-Set.jpg?width=900",
+    ),
+    (
+        "Mango Lassi",
+        "Cold and sweet yogurt drink",
+        90.0,
+        COMMONS + "Tasty_Mango_lassi_picture.JPG?width=900",
+    ),
 ]
 
 
@@ -54,15 +77,22 @@ class Command(BaseCommand):
             restaurant = Restaurant.objects.create(
                 name="Demo Kitchen", owner=owner, address=address, show_on_site=True
             )
-            for name, description, price in DEMO_FOODS:
+            for name, description, price, image_url in DEMO_FOODS:
                 Food.objects.create(
                     name=name,
                     description=description,
                     price=price,
+                    image_url=image_url,
                     restaurant=restaurant,
                     show_on_site=True,
                 )
             self.stdout.write("created Demo Kitchen with foods")
+
+        # foods created by an older run get their photo link too
+        for name, description, price, image_url in DEMO_FOODS:
+            Food.objects.filter(name=name, image_url="", image="").update(
+                image_url=image_url
+            )
 
         # a few delivered orders so the owner's Sales page has something to show
         customer = User.objects.get(email="enduser@example.com")
