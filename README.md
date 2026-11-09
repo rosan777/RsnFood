@@ -1,6 +1,6 @@
-# RsnFood
+# FoodDemo
 
-A simple food ordering website made with Django (university project).
+A simple food ordering demo website made with Django (university project). The GitHub repository is called `RsnFood`.
 
 Three kinds of users: customers (EndUser), restaurant owners (RestaurantOwner) and delivery persons (DeliveryPerson). The admin panel is at `/admin`.
 
