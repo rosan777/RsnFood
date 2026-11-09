@@ -71,7 +71,7 @@ def dashboard(request, userEx):
     elif userEx.user_type == "RestaurantOwner":
         return redirect("ro_dashboard")
     elif userEx.user_type == "DeliveryPerson":
-        return redirect("delivery_person_dashboard")
+        return redirect("dp_dashboard")
 
 
 @not_logged_in
@@ -236,7 +236,9 @@ def ro_add_restaurant(request):
 @restricted_access(allowed=["RestaurantOwner"])
 def ro_edit_restaurant(request, id):
 
-    item = Restaurant.objects.get(id=id)
+    item = Restaurant.objects.filter(id=id, owner=request.user).first()
+    if not item:
+        return render(request, "error.html", {"error": "Restaurant not found."})
 
     if request.method == "POST":
 
@@ -266,13 +268,15 @@ def ro_edit_restaurant(request, id):
 @restricted_access(allowed=["RestaurantOwner"])
 def ro_delete_restaurant(request, id):
 
+    item = Restaurant.objects.filter(id=id, owner=request.user).first()
+    if not item:
+        return render(request, "error.html", {"error": "Restaurant not found."})
+
     if request.method == "POST":
-        item = Restaurant.objects.get(id=id)
         item.delete()
         messages.success(request, "Restaurant deleted successfully")
         return redirect("ro_list_restaurant")
 
-    item = Restaurant.objects.get(id=id)
     return render(request, "res-owner/delete.html", context={"item": item})
 
 
@@ -298,7 +302,9 @@ def ro_add_food(request):
 
     if request.method == "POST":
         try:
-            restaurant = Restaurant.objects.get(id=request.POST["restaurant"])
+            restaurant = Restaurant.objects.get(
+                id=request.POST["restaurant"], owner=request.user
+            )
             food = Food.objects.create(
                 name=request.POST["name"],
                 description=request.POST["description"],
@@ -326,7 +332,9 @@ def ro_add_food(request):
 @restricted_access(allowed=["RestaurantOwner"])
 def ro_edit_food(request, id):
 
-    item = Food.objects.get(id=id)
+    item = Food.objects.filter(id=id, restaurant__owner=request.user).first()
+    if not item:
+        return render(request, "error.html", {"error": "Food not found."})
     restaurants = Restaurant.objects.filter(owner=request.user)
 
     if request.method == "POST":
@@ -337,7 +345,9 @@ def ro_edit_food(request, id):
             item.price = float(request.POST["price"])
             if request.FILES.get("image"):
                 item.image = request.FILES.get("image")
-            item.restaurant = Restaurant.objects.get(id=request.POST["restaurant"])
+            item.restaurant = Restaurant.objects.get(
+                id=request.POST["restaurant"], owner=request.user
+            )
             item.save()
 
             messages.success(request, "Food edited successfully")
@@ -356,13 +366,15 @@ def ro_edit_food(request, id):
 @restricted_access(allowed=["RestaurantOwner"])
 def ro_delete_food(request, id):
 
+    item = Food.objects.filter(id=id, restaurant__owner=request.user).first()
+    if not item:
+        return render(request, "error.html", {"error": "Food not found."})
+
     if request.method == "POST":
-        item = Food.objects.get(id=id)
         item.delete()
         messages.success(request, "Food deleted successfully")
         return redirect("ro_list_food")
 
-    item = Food.objects.get(id=id)
     return render(request, "res-owner/delete.html", context={"item": item})
 
 
@@ -374,24 +386,29 @@ def ro_list_orders(request):
 
 @restricted_access(allowed=["RestaurantOwner"])
 def ro_view_order(request, id):
-    order = Order.objects.get(id=id)
+    order = Order.objects.filter(id=id, restaurant__owner=request.user).first()
+    if not order:
+        return render(request, "error.html", {"error": "Order not found."})
 
     items = OrderItem.objects.filter(order=order)
 
     if request.method == "POST":
         order.status = request.POST["status"]
-        if request.POST["status"] == "Confirmed":
+        if request.POST["status"] == "Confirmed" and not order.delivery_person:
             # randomly choose delivery person
             # on order confirmation from restaurant owner
 
             delivery_persons = User.objects.filter(userex__user_type="DeliveryPerson")
 
-            if not delivery_persons:
-                messages.error(request, "No delivery person available right now")
-                return redirect("ro_view_order", id=id)
-
-            delivery_person = random.choice(delivery_persons)
-            order.delivery_person = delivery_person
+            if delivery_persons:
+                order.delivery_person = random.choice(delivery_persons)
+            else:
+                # order is still confirmed, a delivery person is assigned
+                # when the owner saves "Confirmed" again later
+                messages.error(
+                    request,
+                    "No delivery person available right now. Confirm again later to assign one.",
+                )
         order.save()
         messages.success(request, "Order status updated successfully")
         order = Order.objects.get(id=id)
@@ -423,7 +440,14 @@ def enduser_cart(request):
 
         # cart item can have items from one restaurant at a time
 
-        food = Food.objects.get(id=request.POST["food_id"])
+        food = Food.objects.filter(id=request.POST["food_id"]).first()
+        if not food:
+            return render(request, "error.html", {"error": "Food not found."})
+
+        quantity = int(request.POST["quantity"])
+        if quantity < 1:
+            messages.error(request, "Quantity must be at least 1.")
+            return redirect(request.POST["request_url"])
 
         for item in cart_items:
             if item.food.restaurant != food.restaurant:
@@ -432,11 +456,16 @@ def enduser_cart(request):
                 )
                 return redirect(request.POST["request_url"])
 
-        cart_item = CartItem.objects.create(
-            food=food,
-            quantity=request.POST["quantity"],
-            cart=user_cart,
-        )
+        # same food twice = one cart row with a bigger quantity
+        cart_item = cart_items.filter(food=food).first()
+        if cart_item:
+            cart_item.quantity += quantity
+        else:
+            cart_item = CartItem.objects.create(
+                food=food,
+                quantity=quantity,
+                cart=user_cart,
+            )
         cart_item.save()
         messages.success(request, "Item added to cart.")
         return redirect(request.POST["request_url"])
@@ -454,16 +483,19 @@ def enduser_cart(request):
 
 @restricted_access(allowed=["EndUser"])
 def enduser_clear_cart(request):
-    cart_items = CartItem.objects.filter(cart__user=request.user)
-    for item in cart_items:
-        item.delete()
+    if request.method == "POST":
+        cart_items = CartItem.objects.filter(cart__user=request.user)
+        for item in cart_items:
+            item.delete()
     return redirect("enduser_cart")
 
 
 @restricted_access(allowed=["EndUser"])
 def enduser_remove_from_cart(request, id):
-    item = CartItem.objects.get(id=id)
-    item.delete()
+    if request.method == "POST":
+        item = CartItem.objects.filter(id=id, cart__user=request.user).first()
+        if item:
+            item.delete()
     return redirect("enduser_cart")
 
 
@@ -489,6 +521,10 @@ delivery_person = random.choice(delivery_persons)
 @restricted_access(allowed=["EndUser"])
 def enduser_checkout(request):
     # on get request, user will add address and confirm order
+    if not CartItem.objects.filter(cart__user=request.user).exists():
+        messages.error(request, "Your cart is empty.")
+        return redirect("enduser_cart")
+
     if request.method == "POST":
 
         user_cart = Cart.objects.get(user=request.user)
@@ -556,7 +592,9 @@ def enduser_orders(request):
 
 @restricted_access(allowed=["EndUser"])
 def enduser_order(request, id):
-    order = Order.objects.get(id=id)
+    order = Order.objects.filter(id=id, user=request.user).first()
+    if not order:
+        return render(request, "error.html", {"error": "Order not found."})
     items = OrderItem.objects.filter(order=order)
     return render(
         request, "end-user/order.html", context={"order": order, "items": items}
@@ -599,8 +637,11 @@ def dp_orders(request):
 
 @restricted_access(allowed=["DeliveryPerson"])
 def dp_order(request, id):
+    order = Order.objects.filter(id=id, delivery_person=request.user).first()
+    if not order:
+        return render(request, "error.html", {"error": "Order not found."})
+
     if request.method == "POST":
-        order = Order.objects.get(id=id)
         # print(f"Order: {order} {request.POST}")
         order.status = request.POST["status"]
         order.payment_status = request.POST["payment_status"]
@@ -609,7 +650,6 @@ def dp_order(request, id):
         messages.success(request, "Order status updated successfully")
         return redirect("dp_order", id=id)
 
-    order = Order.objects.get(id=id)
     items = OrderItem.objects.filter(order=order)
     userEx = UserEx.objects.get(user=order.user)
 
