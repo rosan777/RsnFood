@@ -61,7 +61,15 @@ class Restaurant(models.Model):
         Address, on_delete=models.CASCADE, null=True, blank=True
     )
 
+    image_url = models.URLField(max_length=500, blank=True, default="")
+
     show_on_site = models.BooleanField(default=False)  # handled by admin
+
+    @property
+    def picture_url(self):
+        if self.image:
+            return f"{settings.MEDIA_URL}{self.image}"
+        return self.image_url
 
     def __str__(self):
         return f"{self.name}"

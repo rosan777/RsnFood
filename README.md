@@ -47,9 +47,4 @@ Note: Vercel's file system is not permanent, so uploaded images do not survive b
 
 ## Photo credits
 
-The demo food photos on the home page are loaded from Wikimedia Commons under free licences. Open the file page on commons.wikimedia.org to see the author and licence of each one:
-
-- `Chicken_Hyderabadi_Biryani.JPG` (Dheerajk88)
-- `NYC-Diner-Bacon-Cheeseburger.jpg` (Evan-Amos, public domain)
-- `Fried-Chicken-Set.jpg` (Evan-Amos)
-- `Tasty_Mango_lassi_picture.JPG` (Nithyasrm, CC BY-SA 4.0)
+The demo restaurant and food photos are free-to-use photos from Unsplash (Unsplash License, no attribution required), loaded straight from images.unsplash.com in 1000px quality. Photographers: amirali mirhashemian (burger), Manu Ros (bacon burger), Léo Roza (burger and fries), Mario Raj (biryani), Julia Zyablova (mango drink), Thomas Schweighofer and Nadya Spetnitskaya (pizza), Michele Blackwell (ramen), sq lim (noodles), Clint Bustrillos (fried chicken), Proper Quality Shandis and logan jeffrey (chicken plates), Nik and Ayesha Firdaus (cake).
