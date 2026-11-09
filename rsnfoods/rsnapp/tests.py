@@ -265,8 +265,8 @@ class SeedDemoTests(TestCase):
         call_command("seed_demo")
         call_command("seed_demo")
         self.assertEqual(User.objects.filter(email__endswith="@example.com").count(), 3)
-        self.assertEqual(Restaurant.objects.count(), 1)
-        self.assertEqual(Food.objects.count(), 4)
+        self.assertEqual(Restaurant.objects.count(), 6)
+        self.assertEqual(Food.objects.count(), 16)
         self.assertEqual(Order.objects.count(), 4)
 
         response = self.client.post(
@@ -284,8 +284,10 @@ class FoodPhotoTests(TestCase):
 
         call_command("seed_demo")
         response = self.client.get(reverse("index"))
-        self.assertContains(response, "Chicken_Hyderabadi_Biryani.JPG")
-        self.assertContains(response, "Fried-Chicken-Set.jpg")
+        self.assertContains(response, "photo-1631515243349-e0cb75fb8d3a")
+        self.assertContains(response, "photo-1604068549290-dea0e4a305ca")
+        self.assertContains(response, "Napoli Pizza House")
+        self.assertContains(response, "photo-1639020715395-487e2d63b927")
         self.assertContains(response, "Served ice cold")
         self.assertContains(response, "&copy; 2024 FoodDemo")
 
