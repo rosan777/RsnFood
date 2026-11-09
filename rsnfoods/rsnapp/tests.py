@@ -185,3 +185,74 @@ class DashboardTests(BaseTestCase):
         for name in ["restaurant", "food", "order", "userex", "cart"]:
             response = self.client.get(f"/admin/rsnapp/{name}/")
             self.assertEqual(response.status_code, 200, name)
+
+
+class FeatureTests(BaseTestCase):
+    def make_order(self, user, restaurant, status="Delivered", total=300):
+        order = Order.objects.create(
+            user=user, restaurant=restaurant, total=total, status=status
+        )
+        OrderItem.objects.create(order=order, food=self.food1, quantity=3)
+        return order
+
+    def test_invoice_for_customer_and_owner_only(self):
+        order = self.make_order(self.customer, self.res1)
+        url = reverse("order_invoice", args=[order.id])
+
+        for user in [self.customer, self.owner1]:
+            self.client.logout()
+            self.login(user)
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, "Burger")
+            self.assertContains(response, "300")
+
+        for user in [self.customer2, self.owner2]:
+            self.client.logout()
+            self.login(user)
+            self.assertContains(self.client.get(url), "Order not found.")
+
+        self.client.logout()
+        self.login(self.delivery)
+        self.assertContains(self.client.get(url), "not authorized")
+
+    def test_sales_page_counts_only_delivered_orders(self):
+        self.make_order(self.customer, self.res1, "Delivered", 300)
+        self.make_order(self.customer, self.res1, "Pending", 999)
+        self.make_order(self.customer, self.res2, "Delivered", 555)
+        self.login(self.owner1)
+        response = self.client.get(reverse("ro_sales"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["revenue"], 300)
+        self.assertEqual(response.context["orders_count"], 2)
+        self.assertEqual(response.context["top_foods"][0]["qty"], 3)
+
+    def test_sales_page_is_owner_only(self):
+        self.login(self.customer)
+        self.assertContains(self.client.get(reverse("ro_sales")), "not authorized")
+
+    def test_smart_assignment_picks_least_busy_delivery_person(self):
+        busy = self.delivery
+        free = make_user("delivery2", "DeliveryPerson")
+        busy_order = self.make_order(self.customer, self.res1, "Confirmed")
+        busy_order.delivery_person = busy
+        busy_order.save()
+
+        new_order = self.make_order(self.customer2, self.res1, "Pending")
+        self.login(self.owner1)
+        self.client.post(
+            reverse("ro_view_order", args=[new_order.id]), {"status": "Confirmed"}
+        )
+        new_order.refresh_from_db()
+        self.assertEqual(new_order.delivery_person, free)
+
+    def test_language_toggle_switches_to_bangla_and_back(self):
+        self.login(self.customer)
+        self.client.get(reverse("set_language", args=["bn"]))
+        self.assertContains(self.client.get(reverse("enduser_dashboard")), "স্বাগতম")
+        self.client.get(reverse("set_language", args=["en"]))
+        self.assertContains(self.client.get(reverse("enduser_dashboard")), "Welcome")
+
+    def test_language_toggle_ignores_unknown_code(self):
+        self.client.get(reverse("set_language", args=["xx"]))
+        self.assertContains(self.client.get(reverse("index")), "All Restaurants")

@@ -28,33 +28,36 @@
             <!--  -->
             {% if request.userEx.user_type == 'EndUser' %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'enduser_dashboard' %}">Dashboard</a>
+                <a class="nav-link" href="{% url 'enduser_dashboard' %}">{{ t.dashboard }}</a>
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'enduser_orders' %}">Orders</a>
+                <a class="nav-link" href="{% url 'enduser_orders' %}">{{ t.orders }}</a>
               </li>
             {% elif request.userEx.user_type == 'RestaurantOwner' %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'ro_dashboard' %}">Dashboard</a>
+                <a class="nav-link" href="{% url 'ro_dashboard' %}">{{ t.dashboard }}</a>
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'ro_list_orders' %}">Orders</a>
+                <a class="nav-link" href="{% url 'ro_list_orders' %}">{{ t.orders }}</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'ro_list_restaurant' %}">Restaurants</a>
+                <a class="nav-link" href="{% url 'ro_sales' %}">{{ t.sales }}</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'ro_list_food' %}">Foods</a>
+                <a class="nav-link" href="{% url 'ro_list_restaurant' %}">{{ t.restaurants }}</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'ro_list_food' %}">{{ t.foods }}</a>
               </li>
             {% elif request.userEx.user_type == 'DeliveryPerson' %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'dp_dashboard' %}">Dashboard</a>
+                <a class="nav-link" href="{% url 'dp_dashboard' %}">{{ t.dashboard }}</a>
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'dp_orders' %}">Orders</a>
+                <a class="nav-link" href="{% url 'dp_orders' %}">{{ t.orders }}</a>
               </li>
             {% endif %}
           {% else %}
@@ -62,13 +65,14 @@
           {% endif %}
 
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'view_restaurents' %}">All Restaurants</a>
+            <a class="nav-link" href="{% url 'view_restaurents' %}">{{ t.all_restaurants }}</a>
           </li>
         </ul>
       </div>
       <div class="">
+        <a href="{% if lang == 'en' %}{% url 'set_language' 'bn' %}{% else %}{% url 'set_language' 'en' %}{% endif %}" class="btn btn-outline-light">{{ t.other_language }}</a>
         {% if user.is_authenticated %}
-          <a href="{% url 'logout' %}" class="btn btn-outline-light">Logout</a>
+          <a href="{% url 'logout' %}" class="btn btn-outline-light">{{ t.logout }}</a>
           {% if request.userEx.user_type == 'EndUser' %}
             <a href=" {% url 'enduser_cart' %} ">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart">
@@ -79,8 +83,8 @@
             </a>
           {% endif %}
         {% else %}
-          <a href="{% url 'flogin' %}" class="btn btn-outline-light">Login</a>
-          <a href="{% url 'fregister' %}" class="btn btn-outline-light">Register</a>
+          <a href="{% url 'flogin' %}" class="btn btn-outline-light">{{ t.login }}</a>
+          <a href="{% url 'fregister' %}" class="btn btn-outline-light">{{ t.register }}</a>
         {% endif %}
       </div>
     </nav>
@@ -100,7 +104,7 @@
     {% block content %}
 
     {% endblock %}
-    <footer class="site-footer">FoodDemo &middot; demo Django food project</footer>
+    <footer class="site-footer">FoodDemo &middot; {{ t.footer }}</footer>
   </body>
 
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
