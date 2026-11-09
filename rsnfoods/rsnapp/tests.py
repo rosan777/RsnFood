@@ -164,3 +164,24 @@ class OrderFlowTests(BaseTestCase):
             {"email": "delivery@test.com", "password": "pass12345"},
         )
         self.assertRedirects(response, reverse("dp_dashboard"))
+
+
+class DashboardTests(BaseTestCase):
+    def test_each_dashboard_loads_with_counts(self):
+        for user, url_name in [
+            (self.owner1, "ro_dashboard"),
+            (self.customer, "enduser_dashboard"),
+            (self.delivery, "dp_dashboard"),
+        ]:
+            self.client.logout()
+            self.login(user)
+            response = self.client.get(reverse(url_name))
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, "Welcome")
+
+    def test_admin_pages_load(self):
+        admin_user = User.objects.create_superuser("boss", "boss@test.com", "pass12345")
+        self.client.force_login(admin_user)
+        for name in ["restaurant", "food", "order", "userex", "cart"]:
+            response = self.client.get(f"/admin/rsnapp/{name}/")
+            self.assertEqual(response.status_code, 200, name)
