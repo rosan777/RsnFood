@@ -44,3 +44,12 @@ Environment variables to set on Vercel:
 | `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL`, `DJANGO_SUPERUSER_PASSWORD` | optional, creates the admin user on deploy |
 
 Note: Vercel's file system is not permanent, so uploaded images do not survive between deployments. Everything else (users, restaurants, foods, orders) is stored in PostgreSQL.
+
+## Photo credits
+
+The demo food photos on the home page are loaded from Wikimedia Commons under free licences. Open the file page on commons.wikimedia.org to see the author and licence of each one:
+
+- `Chicken_Hyderabadi_Biryani.JPG` (Dheerajk88)
+- `NYC-Diner-Bacon-Cheeseburger.jpg` (Evan-Amos, public domain)
+- `Fried-Chicken-Set.jpg` (Evan-Amos)
+- `Tasty_Mango_lassi_picture.JPG` (Nithyasrm, CC BY-SA 4.0)

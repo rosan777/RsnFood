@@ -276,3 +276,25 @@ class SeedDemoTests(TestCase):
         self.assertRedirects(response, reverse("ro_dashboard"))
         sales = self.client.get(reverse("ro_sales"))
         self.assertContains(sales, "Chicken Biryani")
+
+
+class FoodPhotoTests(TestCase):
+    def test_home_page_shows_food_photos_and_ice_tag(self):
+        from django.core.management import call_command
+
+        call_command("seed_demo")
+        response = self.client.get(reverse("index"))
+        self.assertContains(response, "Chicken_Hyderabadi_Biryani.JPG")
+        self.assertContains(response, "Fried-Chicken-Set.jpg")
+        self.assertContains(response, "Served ice cold")
+        self.assertContains(response, "&copy; 2024 FoodDemo")
+
+    def test_uploaded_image_wins_over_image_url(self):
+        owner = make_user("o", "RestaurantOwner")
+        res = Restaurant.objects.create(name="R", owner=owner)
+        food = Food.objects.create(
+            name="X", restaurant=res, image="food/x.png", image_url="https://e.com/a.jpg"
+        )
+        self.assertTrue(food.picture_url.endswith("food/x.png"))
+        food.image = ""
+        self.assertEqual(food.picture_url, "https://e.com/a.jpg")
