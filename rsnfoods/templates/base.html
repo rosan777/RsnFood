@@ -134,11 +134,11 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   <style>
     :root {
-      --rsn-accent: #f2682b;
-      --rsn-dark: #1b2336;
+      --rsn-accent: #ee7b4d;
+      --rsn-dark: #222b3f;
     }
     body {
-      background: #f5f6fa;
+      background: #f7f8fb;
       color: #2d3748;
     }
     .navbar.bg-primary { background: var(--rsn-dark) !important; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); border-bottom: 3px solid var(--rsn-accent); }
@@ -151,13 +151,13 @@
     .navbar .nav-item.active .nav-link, .navbar .nav-link:hover { color: #fff; background: rgba(255, 255, 255, 0.12); }
     .btn { border-radius: 8px; }
     .btn-primary { background: var(--rsn-accent); border-color: var(--rsn-accent); }
-    .btn-primary:hover, .btn-primary:focus { background: #d9561d; border-color: #d9561d; }
+    .btn-primary:hover, .btn-primary:focus { background: #da6a3e; border-color: #da6a3e; }
     .btn-outline-primary { color: var(--rsn-accent); border-color: var(--rsn-accent); }
     .btn-outline-primary:hover { background: var(--rsn-accent); border-color: var(--rsn-accent); }
     .text-primary { color: var(--rsn-accent) !important; }
     a { color: var(--rsn-accent); }
-    a:hover { color: #d9561d; }
-    .card { border: 0; border-radius: 12px; box-shadow: 0 2px 12px rgba(27, 35, 54, 0.07); }
+    a:hover { color: #da6a3e; }
+    .card { border: 0; border-radius: 12px; box-shadow: 0 2px 10px rgba(27, 35, 54, 0.05); }
     .card-header { background: #fff; border-bottom: 1px solid #eef0f6; border-radius: 12px 12px 0 0 !important; }
     .card-header h3 { font-size: 1.15rem; font-weight: 600; margin: 0; }
     .table { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(27, 35, 54, 0.05); }
@@ -165,7 +165,7 @@
     .table td { vertical-align: middle; }
     .table-hover tbody tr:hover, .table tbody tr:hover { background: #fff7f2; }
     .form-control { border-radius: 8px; }
-    .form-control:focus { border-color: var(--rsn-accent); box-shadow: 0 0 0 0.15rem rgba(242, 104, 43, 0.2); }
+    .form-control:focus { border-color: var(--rsn-accent); box-shadow: 0 0 0 0.15rem rgba(238, 123, 77, 0.18); }
     .alert { border: 0; border-radius: 10px; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06); }
     .alert-error { color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; }
     .page-hero { background: linear-gradient(120deg, var(--rsn-dark), #2e3b5e); color: #fff; padding: 1.75rem 2rem; border-radius: 14px; }
@@ -193,6 +193,20 @@
       .site-footer .footer-links a { display: inline-block; margin: 0 0.5rem 0.3rem; }
       .container, .container-xxl { padding-left: 16px; padding-right: 16px; }
       .display-3 { font-size: 2.2rem; }
+      /* compact row cards on phones: small photo on the left, text on the right */
+      .food-card { display: flex; align-items: stretch; border-radius: 12px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06); }
+      .food-card:hover { transform: none; }
+      .food-card .photo-frame, .food-card .photo-frame.wide { flex: none; width: 110px; aspect-ratio: auto; min-height: 110px; }
+      .food-card .food-body { flex: 1; min-width: 0; padding: 10px 12px; text-align: left; }
+      .food-card .food-body h5 { font-size: 1rem; }
+      .food-card .food-body p { font-size: 0.85rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .food-card .price-tag { right: 6px; bottom: 6px; padding: 0 8px; font-size: 0.8rem; }
+      .food-card .fav-btn { top: 6px; left: 6px; width: 30px; height: 30px; font-size: 1rem; }
+      .resto-row { padding: 8px !important; }
+      .resto-row img { width: 90px !important; height: 70px !important; }
+      .resto-row .resto-info { padding: 0 0 0 10px !important; }
+      .resto-row .btn { padding: 0.3rem 0.8rem; font-size: 0.9rem; }
+      .menu-img { height: 130px !important; }
     }
     .site-footer { margin-top: 3rem; padding: 1.75rem 0; background: var(--rsn-dark); border-top: 3px solid var(--rsn-accent); color: #aeb6c9; font-size: 0.85rem; }
     .site-footer .footer-brand { color: #fff; font-weight: 700; font-size: 1.1rem; }
