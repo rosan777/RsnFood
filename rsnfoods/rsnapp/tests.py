@@ -4,7 +4,6 @@ from django.urls import reverse
 
 from .models import UserEx, Restaurant, Food, Cart, CartItem, Order, OrderItem
 
-
 # Create your tests here.
 
 
@@ -134,7 +133,9 @@ class OrderFlowTests(BaseTestCase):
     def test_confirm_assigns_delivery_person(self):
         order = Order.objects.create(user=self.customer, restaurant=self.res1)
         self.login(self.owner1)
-        self.client.post(reverse("ro_view_order", args=[order.id]), {"status": "Confirmed"})
+        self.client.post(
+            reverse("ro_view_order", args=[order.id]), {"status": "Confirmed"}
+        )
         order.refresh_from_db()
         self.assertEqual(order.status, "Confirmed")
         self.assertEqual(order.delivery_person, self.delivery)
@@ -143,7 +144,9 @@ class OrderFlowTests(BaseTestCase):
         self.delivery.delete()
         order = Order.objects.create(user=self.customer, restaurant=self.res1)
         self.login(self.owner1)
-        self.client.post(reverse("ro_view_order", args=[order.id]), {"status": "Confirmed"})
+        self.client.post(
+            reverse("ro_view_order", args=[order.id]), {"status": "Confirmed"}
+        )
         order.refresh_from_db()
         self.assertEqual(order.status, "Confirmed")
         self.assertIsNone(order.delivery_person)
@@ -154,7 +157,9 @@ class OrderFlowTests(BaseTestCase):
             user=self.customer, restaurant=self.res1, delivery_person=other
         )
         self.login(self.owner1)
-        self.client.post(reverse("ro_view_order", args=[order.id]), {"status": "Confirmed"})
+        self.client.post(
+            reverse("ro_view_order", args=[order.id]), {"status": "Confirmed"}
+        )
         order.refresh_from_db()
         self.assertEqual(order.delivery_person, other)
 
@@ -296,7 +301,9 @@ class WrongInputTests(BaseTestCase):
     def test_owner_cannot_set_invalid_order_status(self):
         order = Order.objects.create(user=self.customer, restaurant=self.res1)
         self.login(self.owner1)
-        self.client.post(reverse("ro_view_order", args=[order.id]), {"status": "Hacked"})
+        self.client.post(
+            reverse("ro_view_order", args=[order.id]), {"status": "Hacked"}
+        )
         order.refresh_from_db()
         self.assertEqual(order.status, "Pending")
 
@@ -358,7 +365,10 @@ class FoodPhotoTests(TestCase):
         owner = make_user("o", "RestaurantOwner")
         res = Restaurant.objects.create(name="R", owner=owner)
         food = Food.objects.create(
-            name="X", restaurant=res, image="food/x.png", image_url="https://e.com/a.jpg"
+            name="X",
+            restaurant=res,
+            image="food/x.png",
+            image_url="https://e.com/a.jpg",
         )
         self.assertTrue(food.picture_url.endswith("food/x.png"))
         food.image = ""

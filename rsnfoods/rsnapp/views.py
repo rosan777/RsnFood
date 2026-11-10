@@ -40,22 +40,75 @@ def index(request):
 
 
 PROFILE_FEATURES = [
-    ("Role based logins", "Customers, owners and couriers each land on their own dashboard and cannot open each other's pages."),
-    ("Cart and checkout", "Add foods, remove or clear them, then confirm the order with a delivery address."),
-    ("Order stages", "Pending, Confirmed, Delivering and Delivered, with Cancelled and Returned handled too."),
-    ("Smart delivery assignment", "The courier with the fewest active orders is chosen when the owner confirms."),
-    ("Invoices", "A clean invoice page for each order that customers and owners can print."),
-    ("Sales report", "Revenue, the last seven days as bars, best selling foods and order counts per status."),
+    (
+        "Role based logins",
+        "Customers, owners and couriers each land on their own dashboard and cannot open each other's pages.",
+    ),
+    (
+        "Cart and checkout",
+        "Add foods, remove or clear them, then confirm the order with a delivery address.",
+    ),
+    (
+        "Order stages",
+        "Pending, Confirmed, Delivering and Delivered, with Cancelled and Returned handled too.",
+    ),
+    (
+        "Smart delivery assignment",
+        "The courier with the fewest active orders is chosen when the owner confirms.",
+    ),
+    (
+        "Invoices",
+        "A clean invoice page for each order that customers and owners can print.",
+    ),
+    (
+        "Sales report",
+        "Revenue, the last seven days as bars, best selling foods and order counts per status.",
+    ),
     ("Favorites", "A heart on every food, with a quick favorites list in the header."),
-    ("English and Bangla", "One tap switches the menus and dashboards between both languages."),
+    (
+        "English and Bangla",
+        "One tap switches the menus and dashboards between both languages.",
+    ),
     ("Photos", "Owners upload photos, and demo foods use fast hosted images."),
 ]
 
 PROFILE_ROADMAP = [
-    ("Payments", ["Card payments", "bKash and Nagad", "Cash on delivery with settlement reports", "Refunds and wallet credit"]),
-    ("Customer experience", ["Live order tracking on a map", "SMS, email and push notifications", "Coupons and loyalty points", "Ratings and reviews"]),
-    ("Restaurant tools", ["Stock and ingredient tracking", "Opening hours and busy mode", "Menu categories and variants", "Kitchen display screen"]),
-    ("Platform and integrations", ["iOS and Android apps", "Public API for partners", "Accounting and POS integration", "Multi-city and multi-branch support"]),
+    (
+        "Payments",
+        [
+            "Card payments",
+            "bKash and Nagad",
+            "Cash on delivery with settlement reports",
+            "Refunds and wallet credit",
+        ],
+    ),
+    (
+        "Customer experience",
+        [
+            "Live order tracking on a map",
+            "SMS, email and push notifications",
+            "Coupons and loyalty points",
+            "Ratings and reviews",
+        ],
+    ),
+    (
+        "Restaurant tools",
+        [
+            "Stock and ingredient tracking",
+            "Opening hours and busy mode",
+            "Menu categories and variants",
+            "Kitchen display screen",
+        ],
+    ),
+    (
+        "Platform and integrations",
+        [
+            "iOS and Android apps",
+            "Public API for partners",
+            "Accounting and POS integration",
+            "Multi-city and multi-branch support",
+        ],
+    ),
 ]
 
 
@@ -98,7 +151,6 @@ def find_and_send_to_dashboard(request):
     except Exception as e:
         return redirect("/admin")
 
- 
 
 def not_implemented(request):
     return HttpResponse("Not Implemented")
@@ -455,7 +507,9 @@ def ro_sales(request):
 
     status_counts = []
     for status, _ in Order.CHOICES:
-        status_counts.append({"status": status, "count": orders.filter(status=status).count()})
+        status_counts.append(
+            {"status": status, "count": orders.filter(status=status).count()}
+        )
 
     return render(
         request,
@@ -805,10 +859,9 @@ def dp_order(request, id):
 
     if request.method == "POST":
         # print(f"Order: {order} {request.POST}")
-        if (
-            request.POST["status"] not in dict(Order.CHOICES)
-            or request.POST["payment_status"] not in dict(Order.PAYMENT_CHOICES)
-        ):
+        if request.POST["status"] not in dict(Order.CHOICES) or request.POST[
+            "payment_status"
+        ] not in dict(Order.PAYMENT_CHOICES):
             messages.error(request, "Invalid order status")
             return redirect("dp_order", id=id)
         order.status = request.POST["status"]
