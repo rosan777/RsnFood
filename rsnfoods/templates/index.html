@@ -150,13 +150,13 @@
   {% include '_tech_strip.html' %}
   <style>
     /* Food and restaurant cards: clean white, one small yellow accent */
-    .food-card { background: #fff; border-radius: 14px; overflow: hidden; height: 100%; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); transition: transform 0.25s ease, box-shadow 0.25s ease; animation: cardIn 0.6s ease both; }
+    .food-card { background: #fff; border-radius: 14px; overflow: hidden; height: 100%; box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06); transition: transform 0.25s ease, box-shadow 0.25s ease; animation: cardIn 0.6s ease both; }
     .food-card:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14); }
     .photo-frame { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #f1f1f1; }
     .photo-frame.wide { aspect-ratio: 16 / 9; }
     .photo-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
     .food-card:hover .photo-frame img { transform: scale(1.07); }
-    .price-tag { position: absolute; right: 10px; bottom: 10px; background: #ffc83d; color: #3b2a00; font-weight: 700; padding: 2px 12px; border-radius: 999px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
+    .price-tag { position: absolute; right: 10px; bottom: 10px; background: #fbd679; color: #4a3a12; font-weight: 700; padding: 2px 12px; border-radius: 999px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
     .food-body { padding: 14px 16px 16px; }
     .ice-tag { display: inline-block; background: #e3f6ff; color: #0a6c93; font-size: 0.8rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; }
     @keyframes cardIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
