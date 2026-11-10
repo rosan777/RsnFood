@@ -340,7 +340,7 @@ class FoodPhotoTests(TestCase):
         self.assertContains(response, "photo-1639020715395-487e2d63b927")
         self.assertContains(response, "Served ice cold")
         self.assertContains(response, "&copy; 2024 FoodDemo")
-        self.assertContains(response, "Django Food - (demo)")
+        self.assertContains(response, "Basic Django Project - Demo")
         self.assertContains(response, "Technology used in this project")
         self.assertContains(response, 'class="fav-btn"')
         self.assertContains(response, 'id="typed-word"')
