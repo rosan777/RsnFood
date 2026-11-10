@@ -74,7 +74,9 @@ def view_restaurents(request):
 
 
 def view_restaurent(request, id):
-    restaurant = Restaurant.objects.get(id=id)
+    restaurant = Restaurant.objects.filter(id=id).first()
+    if not restaurant:
+        return render(request, "error.html", {"error": "Restaurant not found."})
     foods = Food.objects.filter(restaurant=restaurant)
     return render(
         request,
@@ -526,6 +528,9 @@ def ro_view_order(request, id):
     items = OrderItem.objects.filter(order=order)
 
     if request.method == "POST":
+        if request.POST["status"] not in dict(Order.CHOICES):
+            messages.error(request, "Invalid order status")
+            return redirect("ro_view_order", id=id)
         order.status = request.POST["status"]
         if request.POST["status"] == "Confirmed" and not order.delivery_person:
             # smart assignment: choose the delivery person with the
@@ -578,7 +583,10 @@ def enduser_cart(request):
         if not food:
             return render(request, "error.html", {"error": "Food not found."})
 
-        quantity = int(request.POST["quantity"])
+        try:
+            quantity = int(request.POST["quantity"])
+        except ValueError:
+            quantity = 0
         if quantity < 1:
             messages.error(request, "Quantity must be at least 1.")
             return redirect(request.POST["request_url"])
@@ -660,6 +668,10 @@ def enduser_checkout(request):
         return redirect("enduser_cart")
 
     if request.method == "POST":
+
+        if not request.POST["delivery_address"].strip():
+            messages.error(request, "Please enter a delivery address.")
+            return redirect("enduser_checkout")
 
         user_cart = Cart.objects.get(user=request.user)
         items = CartItem.objects.filter(cart=user_cart)
@@ -793,6 +805,12 @@ def dp_order(request, id):
 
     if request.method == "POST":
         # print(f"Order: {order} {request.POST}")
+        if (
+            request.POST["status"] not in dict(Order.CHOICES)
+            or request.POST["payment_status"] not in dict(Order.PAYMENT_CHOICES)
+        ):
+            messages.error(request, "Invalid order status")
+            return redirect("dp_order", id=id)
         order.status = request.POST["status"]
         order.payment_status = request.POST["payment_status"]
         order.save()
