@@ -1,7 +1,4 @@
-asgiref==3.8.1
 Django==5.0.4
 pillow
-sqlparse==0.4.4
-typing_extensions==4.11.0
 whitenoise==6.7.0
 psycopg[binary]==3.2.3

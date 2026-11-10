@@ -47,4 +47,4 @@ Note: Vercel's file system is not permanent, so uploaded images do not survive b
 
 ## Photo credits
 
-The demo restaurant and food photos are free-to-use photos from Unsplash (Unsplash License, no attribution required), loaded straight from images.unsplash.com in 1000px quality. Photographers: amirali mirhashemian (burger), Manu Ros (bacon burger), Léo Roza (burger and fries), Mario Raj (biryani), Julia Zyablova (mango drink), Thomas Schweighofer and Nadya Spetnitskaya (pizza), Michele Blackwell (ramen), sq lim (noodles), Clint Bustrillos (fried chicken), Proper Quality Shandis and logan jeffrey (chicken plates), Nik and Ayesha Firdaus (cake).
+Demo restaurant and food photos are free Unsplash photos (Unsplash License, no attribution required), loaded from images.unsplash.com.
