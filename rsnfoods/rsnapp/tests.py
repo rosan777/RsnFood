@@ -328,6 +328,13 @@ class WrongInputTests(BaseTestCase):
         self.assertEqual(Order.objects.count(), 0)
 
 
+class ProfileContactTests(TestCase):
+    def test_profile_has_contact_link_and_preview(self):
+        response = self.client.get(reverse("project_profile"))
+        self.assertContains(response, 'href="https://oanro.com/contact"')
+        self.assertContains(response, "contact-preview.png")
+
+
 class FoodPhotoTests(TestCase):
     def test_home_page_shows_food_photos_and_ice_tag(self):
         from django.core.management import call_command

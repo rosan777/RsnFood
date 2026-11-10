@@ -1,4 +1,5 @@
 {% extends './base.html' %}
+{% load static %}
 {% block content %}
   <div class="demo-ticker" aria-label="Demo notice">
     <div class="ticker-track">
@@ -168,6 +169,33 @@
     </div>
   </section>
 
+  <section class="pp-section pp-alt reveal" id="contact">
+    <div class="container">
+      <p class="pp-eyebrow dark">Let's talk</p>
+      <h2 class="pp-h2">Tell us what you need</h2>
+      <div class="row align-items-center">
+        <div class="col-lg-7 mb-4">
+          <p>Every project starts with a conversation. What gets built depends on your requirement or ours: from the first design idea to a full professional website, we sit down together and decide what the site needs.</p>
+          <ul class="pp-talk">
+            <li>Design, branding and colors that fit your business</li>
+            <li>Features, user roles and the pages you need</li>
+            <li>Data, reports and AI where they help</li>
+            <li>Hosting, security and long-term support</li>
+            <li>Timeline and budget</li>
+          </ul>
+          <a href="https://oanro.com/contact" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg mt-2">Contact us</a>
+          <p class="small text-muted mt-2 mb-0">Opens the OANRO contact page in a new tab.</p>
+        </div>
+        <div class="col-lg-5 mb-4 text-center">
+          <a href="https://oanro.com/contact" target="_blank" rel="noopener noreferrer" class="pp-shot">
+            <img src="{% static 'img/contact-preview.png' %}" alt="The OANRO contact form: Send us a message, with an empty form: About, Your name, Phone, Email and more" loading="lazy" />
+          </a>
+          <p class="small text-muted mt-2 mb-0">This is the message form you will see after you click.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="pp-cta reveal">
     <div class="container text-center">
       <h2>Take a look around</h2>
@@ -212,6 +240,12 @@
     .pp-step b { display: inline-block; width: 34px; height: 34px; line-height: 34px; border-radius: 50%; background: var(--rsn-accent); color: #fff; margin-bottom: 8px; }
     .pp-step span { display: block; font-size: 0.9rem; }
     .pp-chips span { display: inline-block; margin: 6px 8px 0 0; padding: 7px 18px; border-radius: 999px; background: #fff; border: 1px solid #dfe3ee; font-weight: 600; }
+    .pp-talk { list-style: none; padding: 0; margin: 1rem 0; }
+    .pp-talk li { position: relative; padding: 6px 0 6px 26px; }
+    .pp-talk li::before { content: ''; position: absolute; left: 0; top: 14px; width: 10px; height: 10px; border-radius: 50%; background: var(--rsn-accent); }
+    .pp-shot { display: inline-block; max-width: 420px; border-radius: 14px; overflow: hidden; border: 1px solid #dfe3ee; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .pp-shot:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14); }
+    .pp-shot img { display: block; width: 100%; height: auto; }
     .pp-cta { background: linear-gradient(135deg, #1b2336, #2e3b5e); color: #fff; padding: 64px 0; }
     .pp-cta p { color: #c9d1e6; }
     .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
