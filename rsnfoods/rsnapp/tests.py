@@ -329,10 +329,10 @@ class WrongInputTests(BaseTestCase):
 
 
 class ProfileContactTests(TestCase):
-    def test_profile_has_contact_link_and_preview(self):
+    def test_profile_has_contact_link_without_preview(self):
         response = self.client.get(reverse("project_profile"))
         self.assertContains(response, 'href="https://oanro.com/contact"')
-        self.assertContains(response, "contact-preview.png")
+        self.assertNotContains(response, "contact-preview.png")
 
 
 class FoodPhotoTests(TestCase):
