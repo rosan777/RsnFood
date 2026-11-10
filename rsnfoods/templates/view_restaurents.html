@@ -7,7 +7,7 @@
       <div class="card my-2">
         <div class="resto-row" style="display: flex; gap:10px;padding:2%;justify-content: space-between;width:100%;align-items: center;">
           <div class="d-flex p-2" style="">
-            <img style="height:100px;width:150px;object-fit:cover;border-radius:10px" src="{{ item.picture_url }}" alt="" />
+            <img style="height:100px;width:150px;object-fit:cover;border-radius:10px" src="{{ item.picture_url }}" alt="{{ item.name }}" loading="lazy" />
             <div class="p-4 resto-info">
               <h5 class="card-title">{{ item.name }}</h5>
               <p class="card-text">{{ item.address }}</p>

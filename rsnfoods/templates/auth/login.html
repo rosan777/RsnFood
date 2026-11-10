@@ -25,10 +25,10 @@
   <script>
     console.log(document.loginForm.email)
   </script>
-  <div class="p-4" style="display:flex;gap:3px;margin:1rem;">
-    <button class="btn btn-info" onclick="document.loginForm.email.value=this.innerText;document.loginForm.password.value=this.innerText;">resowner@example.com</button><br />
-    <button class="btn btn-info" onclick="document.loginForm.email.value=this.innerText;document.loginForm.password.value=this.innerText;">enduser@example.com</button><br />
-    <button class="btn btn-info" onclick="document.loginForm.email.value=this.innerText;document.loginForm.password.value=this.innerText;">deliveryperson@example.com</button><br />
+  <div class="p-4" style="display:flex;flex-wrap:wrap;gap:6px;margin:1rem;">
+    <button class="btn btn-info" style="max-width:100%;white-space:normal;word-break:break-all;" onclick="document.loginForm.email.value=this.innerText;document.loginForm.password.value=this.innerText;">resowner@example.com</button><br />
+    <button class="btn btn-info" style="max-width:100%;white-space:normal;word-break:break-all;" onclick="document.loginForm.email.value=this.innerText;document.loginForm.password.value=this.innerText;">enduser@example.com</button><br />
+    <button class="btn btn-info" style="max-width:100%;white-space:normal;word-break:break-all;" onclick="document.loginForm.email.value=this.innerText;document.loginForm.password.value=this.innerText;">deliveryperson@example.com</button><br />
   </div>
   <!-- django messages -->
   {% if messages %}

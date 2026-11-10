@@ -1,10 +1,12 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang|default:'en' }}">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="FoodDemo: a basic Django food ordering demo by OANRO." />
+    <meta name="theme-color" content="#222b3f" />
     <title>
       {% if title %}
         {{ title }}
@@ -186,9 +188,34 @@
     .fav-btn:hover { transform: scale(1.12); }
     .fav-btn.active { color: #e0245e; animation: heartPop 0.35s ease; }
     @keyframes heartPop { 0% { transform: scale(0.7); } 60% { transform: scale(1.35); } 100% { transform: scale(1); } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
+    img { max-width: 100%; }
+    h1, h2, h3, h4, h5, h6, p, .btn { overflow-wrap: anywhere; }
+    .navbar, .site-footer { padding-left: max(0.9rem, env(safe-area-inset-left)); padding-right: max(0.9rem, env(safe-area-inset-right)); }
+    /* very small phones (folded or older devices) */
+    @media (max-width: 359px) {
+      .container.p-4 { padding: 16px !important; }
+      .resto-row img { width: 72px !important; height: 60px !important; }
+      .page-hero { padding-left: 16px; padding-right: 16px; }
+    }
     @media (max-width: 767px) {
       body { overflow-x: hidden; }
-      .table { display: block; overflow-x: auto; white-space: nowrap; }
+      /* comfortable tap targets on touch screens */
+      .btn { min-height: 40px; }
+      .navbar .nav-actions .btn { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; }
+      .navbar .nav-link { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+      .site-footer .footer-links a { padding: 0.6rem 0.25rem; }
+      .table:not(.table-stack) { display: block; overflow-x: auto; white-space: nowrap; }
+      /* tables become stacked cards on phones: one card per row, label on the left, value on the right */
+      .table-stack, .table-stack tbody, .table-stack tr, .table-stack td, .table-stack th { display: block; width: 100%; }
+      .table-stack thead { display: none; }
+      .table-stack tr { background: #fff; border: 1px solid #e3e6ee; border-radius: 12px; margin-bottom: 12px; padding: 6px 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); }
+      .table-stack td, .table-stack th { display: flex; justify-content: space-between; align-items: center; gap: 12px; border: 0; padding: 6px 0; text-align: right; white-space: normal; }
+      .table-stack td + td, .table-stack th + td { border-top: 1px solid #f0f2f7; }
+      .table-stack td[data-label]::before, .table-stack th[data-label]::before { content: attr(data-label); flex: none; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; color: #6b7389; text-align: left; }
+      .table-stack td { width: 100% !important; max-width: none !important; word-break: normal !important; overflow-wrap: anywhere; }
+      .table-stack td:empty { display: none; }
+      .table-stack form { margin: 0; }
       /* phone top bar: brand and menu button on the first row, one tidy row of buttons below */
       .navbar { padding: 0.5rem 0.9rem; }
       .navbar-brand { order: 1; font-size: 1.2rem; margin-right: 0; }
@@ -197,7 +224,7 @@
       .navbar .nav-actions .fav-wrap { display: block !important; flex: 1; }
       .navbar .nav-actions .btn { width: 100%; padding: 0.3rem 0.4rem; font-size: 0.85rem; margin: 0; }
       .navbar .nav-actions > .btn { flex: 1; width: auto; }
-      .navbar .nav-actions > a:not(.btn) { flex: none; padding: 0 6px; line-height: 1; }
+      .navbar .nav-actions > a:not(.btn) { flex: none; padding: 8px 10px; line-height: 1; }
       .navbar .navbar-collapse { order: 4; }
       .site-footer .footer-links a { display: inline-block; margin: 0 0.5rem 0.3rem; }
       .container, .container-xxl { padding-left: 16px; padding-right: 16px; }
@@ -304,6 +331,22 @@
       document.querySelectorAll('span.badge:not(.badge-status)').forEach(function (b) {
         const text = b.textContent.trim()
         if (colors[text]) b.className = 'badge badge-status badge-' + colors[text]
+      })
+    })
+  </script>
+  <script>
+    // on phones, every table row is shown as a card: copy each column title onto its cells
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('table').forEach(function (table) {
+        if (table.querySelector('tfoot') || !table.querySelector('thead')) return
+        const titles = Array.from(table.querySelectorAll('thead th')).map(function (th) { return th.textContent.trim() })
+        table.querySelectorAll('tbody tr').forEach(function (row) {
+          if (row.querySelector('[colspan]')) return
+          Array.from(row.children).forEach(function (cell, i) {
+            if (titles[i]) cell.setAttribute('data-label', titles[i])
+          })
+        })
+        table.classList.add('table-stack')
       })
     })
   </script>
