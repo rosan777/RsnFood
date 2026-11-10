@@ -288,6 +288,46 @@ class SeedDemoTests(TestCase):
         self.assertContains(sales, "Chicken Biryani")
 
 
+class WrongInputTests(BaseTestCase):
+    def test_wrong_restaurant_id_shows_error_page(self):
+        response = self.client.get(reverse("view_restaurent", args=[9999]))
+        self.assertContains(response, "Restaurant not found.")
+
+    def test_owner_cannot_set_invalid_order_status(self):
+        order = Order.objects.create(user=self.customer, restaurant=self.res1)
+        self.login(self.owner1)
+        self.client.post(reverse("ro_view_order", args=[order.id]), {"status": "Hacked"})
+        order.refresh_from_db()
+        self.assertEqual(order.status, "Pending")
+
+    def test_delivery_person_cannot_set_invalid_status(self):
+        order = Order.objects.create(
+            user=self.customer, restaurant=self.res1, delivery_person=self.delivery
+        )
+        self.login(self.delivery)
+        self.client.post(
+            reverse("dp_order", args=[order.id]),
+            {"status": "Delivered", "payment_status": "FREE"},
+        )
+        order.refresh_from_db()
+        self.assertEqual(order.status, "Pending")
+
+    def test_bad_quantity_is_rejected(self):
+        self.login(self.customer)
+        self.client.post(
+            reverse("enduser_cart"),
+            {"food_id": self.food1.id, "quantity": "abc", "request_url": "/"},
+        )
+        self.assertEqual(CartItem.objects.count(), 0)
+
+    def test_checkout_needs_delivery_address(self):
+        self.login(self.customer)
+        cart = Cart.objects.create(user=self.customer)
+        CartItem.objects.create(cart=cart, food=self.food1, quantity=1)
+        self.client.post(reverse("enduser_checkout"), {"delivery_address": "  "})
+        self.assertEqual(Order.objects.count(), 0)
+
+
 class FoodPhotoTests(TestCase):
     def test_home_page_shows_food_photos_and_ice_tag(self):
         from django.core.management import call_command
@@ -300,7 +340,7 @@ class FoodPhotoTests(TestCase):
         self.assertContains(response, "photo-1639020715395-487e2d63b927")
         self.assertContains(response, "Served ice cold")
         self.assertContains(response, "&copy; 2024 FoodDemo")
-        self.assertContains(response, "Django Food - (demo)")
+        self.assertContains(response, "Basic Django Project - Demo")
         self.assertContains(response, "Technology used in this project")
         self.assertContains(response, 'class="fav-btn"')
         self.assertContains(response, 'id="typed-word"')
