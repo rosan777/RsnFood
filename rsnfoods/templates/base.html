@@ -69,7 +69,7 @@
           </li>
         </ul>
       </div>
-      <div class="">
+      <div class="nav-actions">
         <div class="dropdown d-inline-block fav-wrap">
           <button type="button" class="btn btn-outline-light fav-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ t.favorites }}">&#9829; <span id="fav-count" class="fav-count">0</span></button>
           <div class="dropdown-menu dropdown-menu-right fav-menu" id="fav-menu" data-empty="{{ t.no_favorites }}"></div>
@@ -189,7 +189,16 @@
     @media (max-width: 767px) {
       body { overflow-x: hidden; }
       .table { display: block; overflow-x: auto; white-space: nowrap; }
-      .navbar .btn { margin-top: 6px; }
+      /* phone top bar: brand and menu button on the first row, one tidy row of buttons below */
+      .navbar { padding: 0.5rem 0.9rem; }
+      .navbar-brand { order: 1; font-size: 1.2rem; margin-right: 0; }
+      .navbar-toggler { order: 2; border-color: rgba(255, 255, 255, 0.55); padding: 0.25rem 0.55rem; }
+      .navbar .nav-actions { order: 3; width: 100%; display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+      .navbar .nav-actions .fav-wrap { display: block !important; flex: 1; }
+      .navbar .nav-actions .btn { width: 100%; padding: 0.3rem 0.4rem; font-size: 0.85rem; margin: 0; }
+      .navbar .nav-actions > .btn { flex: 1; width: auto; }
+      .navbar .nav-actions > a:not(.btn) { flex: none; padding: 0 6px; line-height: 1; }
+      .navbar .navbar-collapse { order: 4; }
       .site-footer .footer-links a { display: inline-block; margin: 0 0.5rem 0.3rem; }
       .container, .container-xxl { padding-left: 16px; padding-right: 16px; }
       .display-3 { font-size: 2.2rem; }
